@@ -1,0 +1,103 @@
+# Starting number of positive effects
+# Any number between -max_negative and max_positive
+# If the number is negative, the players will start with that many negative effects.
+start_effects: 0
+
+# Maximum number of positive effects (0 to 8)
+max_positive: 8
+
+# Maximum number of negative effects (0 to 8)
+max_negative: 8
+
+# The number of negative effects a player needs to have to get banned.
+# When a player is killed with this many negative effects, they will be banned.
+# Allows numbers from -1 to 8 (-1 disables death bans)
+ban_count: 8
+
+# A list of all the positive effects
+# Use effects from here: https://jd.papermc.io/paper/26.2/org/bukkit/potion/PotionEffectType.html
+# Warning: Effect names may change across versions.  If you run into errors, look for a list for your version.
+# You can also use custom effects defined in datapacks by their namespaced key
+positive_effects:
+- STRENGTH
+- SPEED
+- HASTE
+- FIRE_RESISTANCE
+- HEALTH_BOOST
+- DOLPHINS_GRACE
+- LUCK
+- WATER_BREATHING
+
+# A list of all the negative effects
+# Use effects from here: https://jd.papermc.io/paper/26.2/org/bukkit/potion/PotionEffectType.html
+negative_effects:
+- WEAKNESS
+- SLOWNESS
+- MINING_FATIGUE
+- JUMP_BOOST
+- SLOW_FALLING
+- GLOWING
+- BAD_LUCK
+- HUNGER
+
+# The default level of each effect
+effect_level: 1
+
+# Overrides for the "effect_level" config.
+# Lets you change the level that a specific effect (positive or negative) will get boosted to.
+override_levels:
+  HASTE: 2
+
+###
+### Enhancer Configs
+###
+
+# The duration of the enhancer's effects in seconds
+enhancer_duration: 90
+
+# The level that your effects will be boosted to
+enhanced_level: 3
+
+# Overrides for the "boost_level" config.
+# Lets you change the level specific effects get boosted to.
+enhanced_override_levels:
+  STRENGTH: 2
+  HEALTH_BOOST: 2
+
+###
+### Recipes
+###
+
+recipes:
+  infuse_effect:
+    type: shaped
+    shape:
+      - "DND"
+      - "DBD"
+      - "DND"
+    ingredients:
+      D: DIAMOND_BLOCK
+      N: NETHERITE_INGOT
+      B: GLASS_BOTTLE
+  reviver:
+    type: shaped
+    shape:
+      - "GBE"
+      - "DND"
+      - "EBG"
+    ingredients:
+      D: DRAGON_BREATH
+      N: NETHER_STAR
+      B: NETHERITE_BLOCK
+      G: GHAST_TEAR
+      E: FERMENTED_SPIDER_EYE
+  enhancer:
+    type: shaped
+    shape:
+      - "NGN"
+      - "GBG"
+      - "NGN"
+    ingredients:
+      G: ENCHANTED_GOLDEN_APPLE
+      N: NETHERITE_INGOT
+      B: GLASS_BOTTLE

@@ -12,6 +12,8 @@ public class Infuse extends JavaPlugin {
     }
 
     public void onEnable() {
+        MainConfig.load();
+        
         LOGGER.info("Infuse S1 Plugin has been enabled!");
     }
 
