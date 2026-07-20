@@ -1,0 +1,9 @@
+name: Infuse
+version: '$version'
+main: org.turbojax.infusev1.Infuse
+api-version: '$mcVersion'
+authors: [TurboJax]
+commands:
+  infuse:
+    description: Base command for Infuse
+    usage: /infuse help
