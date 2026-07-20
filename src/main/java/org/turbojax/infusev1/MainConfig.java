@@ -144,6 +144,10 @@ public class MainConfig {
         return effectLevel();
     }
 
+    public static int enhancerDuration() {
+        return config.getInt("enhancer_duration", 90);
+    }
+
     public static int enhancedLevel() {
         return config.getInt("enhanced_level", 3);
     }
