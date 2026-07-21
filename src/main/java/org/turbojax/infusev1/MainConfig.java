@@ -138,10 +138,10 @@ public class MainConfig {
     }
 
     public static int getEffectiveLevel(PotionEffectType effect) {
-        if (config.contains("override_levels." + effect.getKey().asString())) return config.getInt("override_levels." + effect.getKey().asString());
-        if (config.contains("override_levels." + effect.getKey().asMinimalString())) return config.getInt("override_levels." + effect.getKey().asMinimalString());
+        if (config.contains("override_levels." + effect.getKey().asString())) return Math.max(config.getInt("override_levels." + effect.getKey().asString()), 1);
+        if (config.contains("override_levels." + effect.getKey().asMinimalString())) return Math.max(config.getInt("override_levels." + effect.getKey().asMinimalString()), 1);
 
-        return effectLevel();
+        return Math.max(effectLevel(), 1);
     }
 
     public static int enhancerDuration() {
@@ -153,10 +153,10 @@ public class MainConfig {
     }
 
     public static int getEffectiveEnhancedLevel(PotionEffectType effect) {
-        if (config.contains("enhanced_override_levels." + effect.getKey().asString())) return config.getInt("enhanced_override_levels." + effect.getKey().asString());
-        if (config.contains("enhanced_override_levels." + effect.getKey().asMinimalString())) return config.getInt("enhanced_override_levels." + effect.getKey().asMinimalString());
+        if (config.contains("enhanced_override_levels." + effect.getKey().asString())) return Math.max(config.getInt("enhanced_override_levels." + effect.getKey().asString()), 1);
+        if (config.contains("enhanced_override_levels." + effect.getKey().asMinimalString())) return Math.max(config.getInt("enhanced_override_levels." + effect.getKey().asMinimalString()), 1);
 
-        return effectLevel();
+        return Math.max(effectLevel(), 1);
     }
 
     public static Recipe createRecipe(String key, ItemStack result) {
