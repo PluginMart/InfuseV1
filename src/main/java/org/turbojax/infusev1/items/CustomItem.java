@@ -1,8 +1,8 @@
 package org.turbojax.infusev1.items;
 
 import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.CraftingRecipe;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
 import org.turbojax.infusev1.Infuse;
 import org.turbojax.infusev1.MainConfig;
 
@@ -19,7 +19,7 @@ public abstract class CustomItem {
 
     public abstract ItemStack createItem();
 
-    public Recipe createRecipe() {
+    public CraftingRecipe createRecipe() {
         return MainConfig.createRecipe(key, createItem());
     }
 

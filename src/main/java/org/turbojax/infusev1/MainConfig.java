@@ -7,8 +7,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.CraftingRecipe;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.Recipe;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.potion.PotionEffectType;
@@ -159,7 +159,7 @@ public class MainConfig {
         return Math.max(effectLevel(), 1);
     }
 
-    public static Recipe createRecipe(String key, ItemStack result) {
+    public static CraftingRecipe createRecipe(String key, ItemStack result) {
         if (!config.contains("recipes." + key)) return null;
 
         ConfigurationSection recipeSection = config.getConfigurationSection("recipes." + key);
