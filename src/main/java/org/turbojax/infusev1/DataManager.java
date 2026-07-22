@@ -161,7 +161,7 @@ public class DataManager {
         List<PotionEffectType> effects = getEffects(player);
         if (effects.add(type)) {
             setEffects(player, effects);
-            player.addPotionEffect(new PotionEffect(type, -1, MainConfig.getEffectiveLevel(type)));
+            player.addPotionEffect(new PotionEffect(type, -1, MainConfig.getEffectiveLevel(type) - 1));
         } else {
             Infuse.LOGGER.warn("Something tried equipping the {} effect to {} but they already have it.", type.getKey().asString(), player.getName());
         }
