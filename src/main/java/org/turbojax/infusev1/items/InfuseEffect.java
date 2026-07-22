@@ -38,7 +38,7 @@ public class InfuseEffect extends CustomItem {
 
         // Removing a random negative effect from the player if they have any.
         if (DataManager.getScore(p) < 0) {
-            DataManager.removeRandomEffect(p, false);
+            DataManager.removeRandomEffect(p);
             return;
         }
 

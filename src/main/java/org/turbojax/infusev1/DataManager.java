@@ -150,48 +150,25 @@ public class DataManager {
     }
 
     /**
-     * Adds a positive effect to the player.
-     * Automatically increments the player's score.
-     * Does not actually check if the provided effect is positive or negative.  This distinction is only for adjusting the player's score.
+     * Adds an effect to the player.
+     * Does not actually check if the provided effect is positive or negative.
      * 
      * @param player the player to give an effect to.
      * @param type The PotionEffectType to add.
      */
-    public static void addPositiveEffect(Player player, PotionEffectType type) {
+    public static void addEffect(Player player, PotionEffectType type) {
         List<PotionEffectType> effects = getEffects(player);
         if (effects.add(type)) {
             setEffects(player, effects);
-            setScore(player, getScore(player) + 1);
         } else {
             Infuse.LOGGER.warn("Something tried equipping the {} effect to {} but they already have it.", type.getKey().asString(), player.getName());
         }
     }
 
-    public static void addNegativeEffect(Player player, PotionEffectType type) {
-        List<PotionEffectType> effects = getEffects(player);
-        if (effects.add(type)) {
-            setEffects(player, effects);
-            setScore(player, getScore(player) - 1);
-        } else {
-            Infuse.LOGGER.warn("Something tried equipping the {} effect to {} but they already have it.", type.getKey().asString(), player.getName());
-        }
-    }
-
-    public static void removePositiveEffect(Player player, PotionEffectType type) {
+    public static void removeEffect(Player player, PotionEffectType type) {
         List<PotionEffectType> effects = getEffects(player);
         if (effects.remove(type)) {
             setEffects(player, effects);
-            setScore(player, getScore(player) - 1);
-        } else {
-            Infuse.LOGGER.warn("Something tried removing the {} effect from {} but they already don't have it.", type.getKey().asString(), player.getName());
-        }
-    }
-
-    public static void removeNegativeEffect(Player player, PotionEffectType type) {
-        List<PotionEffectType> effects = getEffects(player);
-        if (effects.remove(type)) {
-            setEffects(player, effects);
-            setScore(player, getScore(player) + 1);
         } else {
             Infuse.LOGGER.warn("Something tried removing the {} effect from {} but they already don't have it.", type.getKey().asString(), player.getName());
         }
@@ -207,20 +184,15 @@ public class DataManager {
         PotionEffectType effect = possibleEffects.get((int)(Math.random() * possibleEffects.size()));
 
         // Equipping the effect
-        if (positive) {
-            addPositiveEffect(player, effect);
-        } else {
-            addNegativeEffect(player, effect);
-        }
+        addEffect(player, effect);
     }
 
-    public static void removeRandomEffect(Player player, boolean positive) {
+    public static void removeRandomEffect(Player player) {
         List<PotionEffectType> effects = getEffects(player);
         effects.remove((int)(Math.random() * effects.size()));
 
         // Removing the effect
         setEffects(player, effects);
-        setScore(player, getScore(player) + (positive ? 1 : -1));
     }
 
     public static void applyUpdates() {}
