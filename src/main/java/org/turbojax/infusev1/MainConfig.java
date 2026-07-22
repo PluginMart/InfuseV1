@@ -107,6 +107,10 @@ public class MainConfig {
         return config.getInt("ban_score", -9);
     }
 
+    public static int reviveScore() {
+        return config.getInt("revive_score", 0);
+    }
+
     public static int maxPositive() {
         return config.getInt("max_positive", 8);
     }

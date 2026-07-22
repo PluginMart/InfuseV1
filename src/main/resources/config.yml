@@ -11,6 +11,9 @@ min_score: -9
 # If the config is lower than min_score, players will not be banned.
 ban_score: -9
 
+# The score that a player will be set to when a reviver is used on them.
+revive_score: 0
+
 # Maximum number of positive effects a player can have.
 # Should be between 0 and the number of effects in positive_effects
 max_positive: 8
