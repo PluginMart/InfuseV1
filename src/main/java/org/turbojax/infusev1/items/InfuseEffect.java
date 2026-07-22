@@ -35,16 +35,18 @@ public class InfuseEffect extends CustomItem {
         if (!item.getPersistentDataContainer().has(nsKey)) return;
 
         Player p = event.getPlayer();
+        int pScore = DataManager.getScore(p);
 
         // Removing a random negative effect from the player if they have any.
-        if (DataManager.getScore(p) < 0) {
+        if (pScore < 0) {
+            DataManager.setScore(p, pScore + 1);
             DataManager.removeRandomEffect(p);
             return;
         }
 
         // Making sure the player doesn't have the max number of positive effects
         // maybe replace with a "score" attribute that is the number of effects the player has
-        if (DataManager.getScore(p) >= MainConfig.maxPositive()) {
+        if (pScore >= MainConfig.maxPositive()) {
             event.setCancelled(true);
 
             p.sendMessage("You already have the maximum number of positive effects");
@@ -52,6 +54,7 @@ public class InfuseEffect extends CustomItem {
         }
 
         // Adding a random positive effect
+        DataManager.setScore(p, pScore + 1);
         DataManager.addRandomEffect(p, true);
     }
 }
