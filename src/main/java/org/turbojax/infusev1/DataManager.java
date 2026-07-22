@@ -5,6 +5,7 @@ import org.bukkit.Registry;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.jspecify.annotations.NonNull;
 
@@ -160,6 +161,7 @@ public class DataManager {
         List<PotionEffectType> effects = getEffects(player);
         if (effects.add(type)) {
             setEffects(player, effects);
+            player.addPotionEffect(new PotionEffect(type, -1, MainConfig.getEffectiveLevel(type)));
         } else {
             Infuse.LOGGER.warn("Something tried equipping the {} effect to {} but they already have it.", type.getKey().asString(), player.getName());
         }
@@ -169,6 +171,7 @@ public class DataManager {
         List<PotionEffectType> effects = getEffects(player);
         if (effects.remove(type)) {
             setEffects(player, effects);
+            player.removePotionEffect(type);
         } else {
             Infuse.LOGGER.warn("Something tried removing the {} effect from {} but they already don't have it.", type.getKey().asString(), player.getName());
         }
@@ -189,10 +192,9 @@ public class DataManager {
 
     public static void removeRandomEffect(Player player) {
         List<PotionEffectType> effects = getEffects(player);
-        effects.remove((int)(Math.random() * effects.size()));
+        PotionEffectType removed = effects.remove((int)(Math.random() * effects.size()));
 
-        // Removing the effect
-        setEffects(player, effects);
+        removeEffect(player, removed);
     }
 
     public static void applyUpdates() {}
