@@ -1,7 +1,5 @@
 package org.turbojax.infusev1.items;
 
-import java.util.List;
-
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -11,8 +9,7 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
+import org.turbojax.infusev1.DataManager;
 import org.turbojax.infusev1.MainConfig;
 
 public class InfuseEffect extends CustomItem implements Listener {
@@ -41,28 +38,22 @@ public class InfuseEffect extends CustomItem implements Listener {
 
         Player p = event.getPlayer();
 
-        // TODO: Check if the player has any negative effects
+        // Removing a random negative effect from the player if they have any.
+        if (DataManager.getScore(p) < 0) {
+            DataManager.removeRandomEffect(p, false);
+            return;
+        }
 
-        List<PotionEffectType> activeEffects = List.of();
-
-        // Making sure the player doesn't have the max number of effects
+        // Making sure the player doesn't have the max number of positive effects
         // maybe replace with a "score" attribute that is the number of effects the player has
-        if (activeEffects.size() == MainConfig.maxPositive()) {
+        if (DataManager.getScore(p) >= MainConfig.maxPositive()) {
             event.setCancelled(true);
 
             p.sendMessage("You already have the maximum number of positive effects");
             return;
         }
 
-
-        // TODO: Get valid effects
-        List<PotionEffectType> possibleEffects = MainConfig.positiveEffects();
-        possibleEffects.removeAll(activeEffects);
-
-        PotionEffectType effectType = possibleEffects.get((int) (Math.random() * possibleEffects.size()));
-        PotionEffect effect = new PotionEffect(effectType, -1, MainConfig.getEffectiveLevel(effectType) - 1);
-        p.addPotionEffect(effect);
-
-        // TODO: Update playerdata
+        // Adding a random positive effect
+        DataManager.addRandomEffect(p, true);
     }
 }

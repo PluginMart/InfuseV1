@@ -10,10 +10,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
+import org.turbojax.infusev1.DataManager;
 import org.turbojax.infusev1.MainConfig;
-
-import java.util.List;
 
 public class Enhancer extends CustomItem implements Listener {
     public Enhancer() {
@@ -42,8 +40,8 @@ public class Enhancer extends CustomItem implements Listener {
 
         int duration = MainConfig.enhancerDuration() * 20;
 
-        // TODO: Get all the player's effects        
-        List.of(PotionEffectType.ABSORPTION).stream()
+        // Enhancing the player's effects
+        DataManager.getEffects(p).stream()
             .map(e -> new PotionEffect(e, duration, MainConfig.getEffectiveEnhancedLevel(e) - 1))
             .forEach(p::addPotionEffect);
     }
