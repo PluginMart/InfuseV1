@@ -3,8 +3,6 @@ package org.turbojax.infusev1.items;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -13,7 +11,7 @@ import org.bukkit.potion.PotionEffect;
 import org.turbojax.infusev1.DataManager;
 import org.turbojax.infusev1.MainConfig;
 
-public class Enhancer extends CustomItem implements Listener {
+public class Enhancer extends CustomItem {
     public Enhancer() {
         super("enhancer");
     }
@@ -30,7 +28,7 @@ public class Enhancer extends CustomItem implements Listener {
         return item;
     }
 
-    @EventHandler
+    @Override
     public void onConsume(PlayerItemConsumeEvent event) {
         ItemStack item = event.getItem();
 

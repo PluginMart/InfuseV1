@@ -3,14 +3,12 @@ package org.turbojax.infusev1.items;
 import io.papermc.paper.datacomponent.DataComponentTypes;
 import io.papermc.paper.datacomponent.item.Consumable;
 import org.bukkit.Material;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.turbojax.infusev1.inventories.ReviverMenu;
 
-public class Reviver extends CustomItem implements Listener {
+public class Reviver extends CustomItem {
     public Reviver() {
         super("reviver");
     }
@@ -35,7 +33,7 @@ public class Reviver extends CustomItem implements Listener {
         return item;
     }
 
-    @EventHandler
+    @Override
     public void onConsume(PlayerItemConsumeEvent event) {
         ItemStack item = event.getItem();
 
