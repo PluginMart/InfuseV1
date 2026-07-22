@@ -23,6 +23,7 @@ public class PlayerDeathListener implements Listener {
             int banScore = MainConfig.banScore();
             if (banScore < 0 && deadScore - 1 == banScore) {
                 dead.ban("Ran out of lives!", (Date) null, null);
+                DataManager.ban(dead);
             }
 
             if (deadScore > 0 && deadScore < MainConfig.maxPositive()) {
