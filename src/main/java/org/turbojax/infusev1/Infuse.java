@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.turbojax.infusev1.items.Enhancer;
 import org.turbojax.infusev1.items.InfuseEffect;
 import org.turbojax.infusev1.items.Reviver;
+import org.turbojax.infusev1.listeners.PlayerDeathListener;
 
 public class Infuse extends JavaPlugin {
     public static final Logger LOGGER = LoggerFactory.getLogger("Infuse");
@@ -20,6 +21,9 @@ public class Infuse extends JavaPlugin {
     public void onEnable() {
         MainConfig.load();
         DataManager.load();
+
+        // Registering listeners
+        Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(), this);
         
         LOGGER.info("Infuse S1 Plugin has been enabled!");
     }
