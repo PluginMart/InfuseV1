@@ -91,8 +91,20 @@ public class MainConfig {
         return false;
     }
 
-    public static int startEffects() {
-        return config.getInt("start_effects", 0);
+    public static int startingScore() {
+        return config.getInt("starting_score", 0);
+    }
+
+    public static int maxScore() {
+        return config.getInt("max_score", 8);
+    }
+
+    public static int minScore() {
+        return config.getInt("min_score", -9);
+    }
+
+    public static int banScore() {
+        return config.getInt("ban_score", -9);
     }
 
     public static int maxPositive() {
@@ -101,10 +113,6 @@ public class MainConfig {
 
     public static int maxNegative() {
         return config.getInt("max_negative", 8);
-    }
-
-    public static int banCount() {
-        return config.getInt("ban_count", 8);
     }
 
     public static List<PotionEffectType> positiveEffects() {

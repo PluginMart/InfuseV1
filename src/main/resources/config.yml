@@ -1,18 +1,23 @@
-# Starting number of positive effects
-# Any number between -max_negative and max_positive
-# If the number is negative, the players will start with that many negative effects.
-start_effects: 0
+# Starting score of any player.  A positive score will give the player that many positive effects.  A negative score will give the player that many negative effects.
+# Can be any number between -max_negative and max_positive
+starting_score: 0
 
-# Maximum number of positive effects (0 to 8)
+# Max and minimum scores.  A player's score cannot go past these bounds.
+max_score: 8
+min_score: -9
+
+# The score that a player will get banned at.
+# Setting the score to anything >= 0 will disable deathbans.
+# If the config is lower than min_score, players will not be banned.
+ban_score: -9
+
+# Maximum number of positive effects a player can have.
+# Should be between 0 and the number of effects in positive_effects
 max_positive: 8
 
-# Maximum number of negative effects (0 to 8)
+# Maximum number of negative effects a player can have.
+# Should be between 0 and the number of effects in negative_effects
 max_negative: 8
-
-# The number of negative effects a player needs to have to get banned.
-# When a player is killed with this many negative effects, they will be banned.
-# Allows numbers from -1 to 8 (-1 disables death bans)
-ban_count: 8
 
 # A list of all the positive effects
 # Use effects from here: https://jd.papermc.io/paper/26.2/org/bukkit/potion/PotionEffectType.html

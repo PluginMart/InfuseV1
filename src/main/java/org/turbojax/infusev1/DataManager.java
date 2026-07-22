@@ -110,7 +110,7 @@ public class DataManager {
     public int getScore(Player player) {
         String key = player.getUniqueId() + ".score";
         if (!config.contains(key)) {
-            int score = MainConfig.startEffects();
+            int score = MainConfig.startingScore();
             config.set(key, score);
             return score;
         }
