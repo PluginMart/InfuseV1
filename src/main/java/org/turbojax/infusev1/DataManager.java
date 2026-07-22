@@ -1,6 +1,8 @@
 package org.turbojax.infusev1;
 
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Registry;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -13,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 public class DataManager {
     private static final Infuse plugin = Infuse.getInstance();
@@ -108,7 +111,7 @@ public class DataManager {
         return true;
     }
 
-    public static int getScore(Player player) {
+    public static int getScore(OfflinePlayer player) {
         String key = player.getUniqueId() + ".score";
         if (!config.contains(key)) {
             int score = MainConfig.startingScore();
@@ -119,7 +122,7 @@ public class DataManager {
         return config.getInt(player.getUniqueId().toString() + ".score");
     }
 
-    public static void setScore(Player player, int score) {
+    public static void setScore(OfflinePlayer player, int score) {
         // Clamping the score within the bounds
         score = Math.clamp(score, MainConfig.minScore(), MainConfig.maxScore());
 
@@ -127,7 +130,7 @@ public class DataManager {
         config.set(player.getUniqueId() + ".score", score);
     }
 
-    public static @NonNull List<@NonNull PotionEffectType> getEffects(Player player) {
+    public static @NonNull List<@NonNull PotionEffectType> getEffects(OfflinePlayer player) {
         return config.getStringList(player.getUniqueId() + ".effects")
             .stream()
             .map(e -> {
@@ -141,7 +144,7 @@ public class DataManager {
             .toList();
     }
 
-    public static void setEffects(Player player, List<PotionEffectType> effects) {
+    public static void setEffects(OfflinePlayer player, List<PotionEffectType> effects) {
         List<String> effectKeys = effects.stream()
             .map(PotionEffectType::getKey)
             .map(NamespacedKey::asString)
@@ -195,6 +198,36 @@ public class DataManager {
         PotionEffectType removed = effects.remove((int)(Math.random() * effects.size()));
 
         removeEffect(player, removed);
+    }
+
+    public static List<OfflinePlayer> getBanned() {
+        return config.getStringList("banned")
+            .stream()
+            .map(UUID::fromString)
+            .map(Bukkit::getOfflinePlayer)
+            .toList();
+    }
+
+    public static void setBanned(List<OfflinePlayer> banned) {
+        config.set("banned", banned.stream()
+            .map(OfflinePlayer::getUniqueId)
+            .toList());
+    }
+
+    public static void ban(OfflinePlayer player) {
+        List<OfflinePlayer> banned = getBanned();
+        if (banned.add(player)) {
+            setBanned(banned);
+        }
+    }
+
+    public static void unban(OfflinePlayer player) {
+        if (player == null) return;
+        
+        List<OfflinePlayer> banned = getBanned();
+        if (banned.remove(player)) {
+            setBanned(banned);
+        }
     }
 
     public static void applyUpdates() {}

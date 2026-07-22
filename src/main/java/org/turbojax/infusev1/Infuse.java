@@ -6,6 +6,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.turbojax.infusev1.inventories.ConfirmReviveMenu;
+import org.turbojax.infusev1.inventories.ReviverMenu;
 import org.turbojax.infusev1.items.Enhancer;
 import org.turbojax.infusev1.items.InfuseEffect;
 import org.turbojax.infusev1.items.Reviver;
@@ -24,6 +26,8 @@ public class Infuse extends JavaPlugin {
 
         // Registering listeners
         Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(), this);
+        Bukkit.getPluginManager().registerEvents(new ReviverMenu(), this);
+        Bukkit.getPluginManager().registerEvents(new ConfirmReviveMenu(0, Bukkit.getOfflinePlayer("TurboJax07")), this);
         
         LOGGER.info("Infuse S1 Plugin has been enabled!");
     }
