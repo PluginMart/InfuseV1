@@ -107,7 +107,7 @@ public class DataManager {
         return true;
     }
 
-    public int getScore(Player player) {
+    public static int getScore(Player player) {
         String key = player.getUniqueId() + ".score";
         if (!config.contains(key)) {
             int score = MainConfig.startingScore();
@@ -118,11 +118,15 @@ public class DataManager {
         return config.getInt(player.getUniqueId().toString() + ".score");
     }
 
-    public void setScore(Player player, int score) {
+    public static void setScore(Player player, int score) {
+        // Clamping the score within the bounds
+        score = Math.clamp(score, MainConfig.minScore(), MainConfig.maxScore());
+
+        // Updating the data
         config.set(player.getUniqueId() + ".score", score);
     }
 
-    public @NonNull List<@NonNull PotionEffectType> getEffects(Player player) {
+    public static @NonNull List<@NonNull PotionEffectType> getEffects(Player player) {
         return config.getStringList(player.getUniqueId() + ".effects")
             .stream()
             .map(e -> {
@@ -136,7 +140,7 @@ public class DataManager {
             .toList();
     }
 
-    public void setEffects(Player player, List<PotionEffectType> effects) {
+    public static void setEffects(Player player, List<PotionEffectType> effects) {
         List<String> effectKeys = effects.stream()
             .map(PotionEffectType::getKey)
             .map(NamespacedKey::asString)
@@ -153,7 +157,7 @@ public class DataManager {
      * @param player the player to give an effect to.
      * @param type The PotionEffectType to add.
      */
-    public void addPositiveEffect(Player player, PotionEffectType type) {
+    public static void addPositiveEffect(Player player, PotionEffectType type) {
         List<PotionEffectType> effects = getEffects(player);
         if (effects.add(type)) {
             setEffects(player, effects);
@@ -163,7 +167,7 @@ public class DataManager {
         }
     }
 
-    public void addNegativeEffect(Player player, PotionEffectType type) {
+    public static void addNegativeEffect(Player player, PotionEffectType type) {
         List<PotionEffectType> effects = getEffects(player);
         if (effects.add(type)) {
             setEffects(player, effects);
@@ -173,7 +177,7 @@ public class DataManager {
         }
     }
 
-    public void removePositiveEffect(Player player, PotionEffectType type) {
+    public static void removePositiveEffect(Player player, PotionEffectType type) {
         List<PotionEffectType> effects = getEffects(player);
         if (effects.remove(type)) {
             setEffects(player, effects);
@@ -183,7 +187,7 @@ public class DataManager {
         }
     }
 
-    public void removeNegativeEffect(Player player, PotionEffectType type) {
+    public static void removeNegativeEffect(Player player, PotionEffectType type) {
         List<PotionEffectType> effects = getEffects(player);
         if (effects.remove(type)) {
             setEffects(player, effects);
@@ -193,5 +197,31 @@ public class DataManager {
         }
     }
 
-    public void applyUpdates() {}
+    public static void addRandomEffect(Player player, boolean positive) {
+        List<PotionEffectType> possibleEffects = positive ? MainConfig.positiveEffects() : MainConfig.negativeEffects();
+
+        // Removing already equipped effects
+        possibleEffects.removeAll(getEffects(player));
+
+        // Selecting a random effect
+        PotionEffectType effect = possibleEffects.get((int)(Math.random() * possibleEffects.size()));
+
+        // Equipping the effect
+        if (positive) {
+            addPositiveEffect(player, effect);
+        } else {
+            addNegativeEffect(player, effect);
+        }
+    }
+
+    public static void removeRandomEffect(Player player, boolean positive) {
+        List<PotionEffectType> effects = getEffects(player);
+        effects.remove((int)(Math.random() * effects.size()));
+
+        // Removing the effect
+        setEffects(player, effects);
+        setScore(player, getScore(player) + (positive ? 1 : -1));
+    }
+
+    public static void applyUpdates() {}
 }
