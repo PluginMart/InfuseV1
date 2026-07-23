@@ -16,7 +16,7 @@ public class PlayerRespawnListener implements Listener {
         // Giving the player their effects when they respawn
         DataManager.getEffects(p)
             .stream()
-            .map(e -> new PotionEffect(e, -1, MainConfig.getEffectiveLevel(e)))
+            .map(e -> new PotionEffect(e, -1, MainConfig.getEffectiveLevel(e) - 1))
             .forEach(p::addPotionEffect);
     }
 }

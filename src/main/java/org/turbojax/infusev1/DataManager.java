@@ -224,6 +224,7 @@ public class DataManager {
             setScore(player, MainConfig.reviveScore());
             
             config.set(player.getUniqueId() + ".needs_reset", true);
+            save();
         }
     }
 
