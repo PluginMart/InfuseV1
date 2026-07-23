@@ -114,6 +114,8 @@ public class DataManager {
 
         // Updating the data
         config.set(player.getUniqueId() + ".score", score);
+
+        save();
     }
 
     public static @NonNull List<@NonNull PotionEffectType> getEffects(OfflinePlayer player) {
@@ -137,6 +139,8 @@ public class DataManager {
             .toList();
 
         config.set(player.getUniqueId() + ".effects", effectKeys);
+
+        save();
     }
 
     /**
@@ -197,7 +201,10 @@ public class DataManager {
     public static void setBanned(List<OfflinePlayer> banned) {
         config.set("banned", banned.stream()
             .map(OfflinePlayer::getUniqueId)
+            .map(UUID::toString)
             .toList());
+
+        save();
     }
 
     public static void ban(OfflinePlayer player) {
