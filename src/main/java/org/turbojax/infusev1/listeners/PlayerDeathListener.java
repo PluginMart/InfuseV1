@@ -14,6 +14,9 @@ public class PlayerDeathListener implements Listener {
     public void onDeath(PlayerDeathEvent event) {
         Player dead = event.getPlayer();
         int deadScore = DataManager.getScore(dead);
+        Player killer = dead.getKiller();
+        if (killer == null) return;
+        int killerScore = DataManager.getScore(killer);
 
         if (deadScore - 1 >= MainConfig.minScore()) {
             // Updating the player's score
@@ -34,9 +37,6 @@ public class PlayerDeathListener implements Listener {
                 DataManager.addRandomEffect(dead, false);
             }
         }
-
-        Player killer = dead.getKiller();
-        int killerScore = DataManager.getScore(killer);
 
         if (killerScore + 1 <= MainConfig.maxScore()) {
             // Updating the player's score
