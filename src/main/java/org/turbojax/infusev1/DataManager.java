@@ -1,5 +1,6 @@
 package org.turbojax.infusev1;
 
+import io.papermc.paper.ban.BanListType;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.OfflinePlayer;
@@ -227,6 +228,8 @@ public class DataManager {
         List<OfflinePlayer> banned = getBanned();
         if (banned.remove(player)) {
             setBanned(banned);
+            Bukkit.getServer().getBanList(BanListType.PROFILE).pardon(player.getPlayerProfile());
+            setScore(player, MainConfig.reviveScore());
         }
     }
 

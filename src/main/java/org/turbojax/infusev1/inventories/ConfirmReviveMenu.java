@@ -17,10 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.jetbrains.annotations.NotNull;
 import org.turbojax.infusev1.DataManager;
-import org.turbojax.infusev1.MainConfig;
 import org.turbojax.infusev1.items.Reviver;
-
-import io.papermc.paper.ban.BanListType;
 
 public class ConfirmReviveMenu implements InventoryHolder, Listener {
     private final Inventory inventory;
@@ -70,8 +67,6 @@ public class ConfirmReviveMenu implements InventoryHolder, Listener {
         if (item.getType() == Material.GREEN_STAINED_GLASS_PANE) {
             // Unbanning the selected player
             DataManager.unban(menu.player);
-            Bukkit.getServer().getBanList(BanListType.PROFILE).pardon(menu.player.getPlayerProfile());
-            DataManager.setScore(menu.player, MainConfig.reviveScore());
 
             menu.shouldRefund = false;
 
