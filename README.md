@@ -32,6 +32,14 @@ Removes one of your negative effects or gives you a positive effect.
  |- `getscore <player>`: Gets a player's score.  
  \\- `give <player> <item> [count]`: Gives a player an infuse item.  
 
+## Permissions
+- `infusev1.help`: Lets players use `/infuse help`
+- `infusev1.reload`: Lets players use `/infuse reload`
+- `infusev1.revive`: Lets players use `/infuse revive`
+- `infusev1.setscore`: Lets players use `/infuse setscore`
+- `infusev1.getscore`: Lets players use `/infuse getscore`
+- `infusev1.give`: Lets playerss use `/infuse give`
+
 ## Config
 ```yml
 # Starting score of any player.  A positive score will give the player that many positive effects.  A negative score will give the player that many negative effects.
