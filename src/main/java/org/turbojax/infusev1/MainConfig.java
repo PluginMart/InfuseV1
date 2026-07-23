@@ -156,7 +156,7 @@ public class MainConfig {
         if (config.contains("enhanced_override_levels." + effect.getKey().asString())) return Math.max(config.getInt("enhanced_override_levels." + effect.getKey().asString()), 1);
         if (config.contains("enhanced_override_levels." + effect.getKey().asMinimalString())) return Math.max(config.getInt("enhanced_override_levels." + effect.getKey().asMinimalString()), 1);
 
-        return Math.max(effectLevel(), 1);
+        return Math.max(enhancedLevel(), 1);
     }
 
     public static CraftingRecipe createRecipe(String key, ItemStack result) {
