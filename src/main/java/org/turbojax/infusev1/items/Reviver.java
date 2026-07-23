@@ -32,6 +32,7 @@ public class Reviver extends CustomItem implements Listener {
         ItemStack item = event.getItem();
 
         // Skipping items that aren't this one
+        if (item == null) return;
         if (!item.getPersistentDataContainer().has(nsKey)) return;
 
         item.subtract();
