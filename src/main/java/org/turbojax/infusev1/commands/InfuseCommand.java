@@ -23,6 +23,8 @@ import org.turbojax.infusev1.items.CustomItem;
 import org.turbojax.infusev1.util.BannedPlayerArgumentType;
 import org.turbojax.infusev1.util.InfuseItemArgumentType;
 
+import java.util.Date;
+
 public class InfuseCommand {
     private static final MiniMessage mm = MiniMessage.miniMessage();
     private static final MessageComponentSerializer msgSerializer = MessageComponentSerializer.message();
@@ -121,6 +123,13 @@ public class InfuseCommand {
 
         DataManager.setScore(player, score);
         DataManager.resetEffects(player);
+
+        // Banning the player if necessary
+        int banScore = MainConfig.banScore();
+        if (banScore < 0 && score == banScore) {
+            player.ban("Ran out of lives!", (Date) null, null);
+            DataManager.ban(player);
+        }
 
         sender.sendMessage(Component.text("Set " + player.getName() + "'s score to " + score, NamedTextColor.GREEN));
 
