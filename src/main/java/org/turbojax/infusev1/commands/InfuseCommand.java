@@ -21,6 +21,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.turbojax.infusev1.DataManager;
 import org.turbojax.infusev1.MainConfig;
@@ -114,11 +115,19 @@ public class InfuseCommand {
         DataManager.setScore(player, score);
 
         List<PotionEffectType> newEffects = new ArrayList<>();
-        List<PotionEffectType> possibleEffects = (score > 0) ? MainConfig.positiveEffects() : MainConfig.negativeEffects();
+        List<PotionEffectType> possibleEffects = new ArrayList<>((score > 0) ? MainConfig.positiveEffects() : MainConfig.negativeEffects());
 
         for (int i = 0; i < Math.abs(score); i++) {
             newEffects.add(possibleEffects.remove((int) (Math.random() * possibleEffects.size())));
         }
+
+        // Removing all infinite effects
+        player.getActivePotionEffects().stream()
+            .filter(e -> e.getDuration() == -1)
+            .forEach(e -> player.removePotionEffect(e.getType()));
+
+        // Equipping the new effects
+        newEffects.forEach(e -> player.addPotionEffect(new PotionEffect(e, -1, MainConfig.getEffectiveLevel(e) - 1)));
 
         DataManager.setEffects(player, newEffects);
 
