@@ -20,8 +20,12 @@ public class Infuse extends JavaPlugin {
     }
 
     public void onEnable() {
+        // Loading configs
         MainConfig.load();
         DataManager.load();
+
+        // Registering recipes
+        registerRecipes();
 
         // Registering listeners
         Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(), this);
@@ -47,7 +51,7 @@ public class Infuse extends JavaPlugin {
         LOGGER.info("Infuse Plugin has been disabled!");
     }
 
-    public void registerRecipes() {
+    public static void registerRecipes() {
         Stream.of(new InfuseEffect().createRecipe(), new Enhancer().createRecipe(), new Reviver().createRecipe())
             .forEach(r -> {
                 Bukkit.removeRecipe(r.getKey());

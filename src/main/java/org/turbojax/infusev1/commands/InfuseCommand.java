@@ -17,6 +17,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.turbojax.infusev1.DataManager;
+import org.turbojax.infusev1.Infuse;
 import org.turbojax.infusev1.MainConfig;
 import org.turbojax.infusev1.items.CustomItem;
 import org.turbojax.infusev1.util.BannedPlayerArgumentType;
@@ -87,6 +88,7 @@ public class InfuseCommand {
         CommandSender sender = ctx.getSource().getSender();
 
         MainConfig.load();
+        Infuse.registerRecipes();
         sender.sendMessage(Component.text("Reloaded the config.", NamedTextColor.GREEN));
 
         return 1;
