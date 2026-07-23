@@ -43,7 +43,7 @@ public class Infuse extends JavaPlugin {
 
     public void onDisable() {
         MainConfig.save();
-        DataManager.save();
+        DataManager.save(false);
         LOGGER.info("Infuse Plugin has been disabled!");
     }
 

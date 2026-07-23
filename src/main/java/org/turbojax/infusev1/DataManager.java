@@ -51,12 +51,16 @@ public class DataManager {
         return false;
     }
 
+    public static boolean save() {
+        return save(true);
+    }
+
     /**
      * Writes the config to the file.
      * 
      * @return Whether or not the config was successfully written.
      */
-    public static boolean save() {
+    public static boolean save(boolean quiet) {
         // Creating the file if it doesn't exist.
         // If the function returns false, the load function fails too.
         if (!createFile(false)) {
@@ -66,7 +70,7 @@ public class DataManager {
         // Saving the config
         try {
             config.save(file);
-            Infuse.LOGGER.info("Saved {}", file.getName());
+            if (!quiet) Infuse.LOGGER.info("Saved {}", file.getName());
             return true;
         } catch (IOException e) {
             Infuse.LOGGER.warn("Could not save {}.  Make sure the user has write permissions.", file.getName());
