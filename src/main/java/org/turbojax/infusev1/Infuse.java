@@ -6,12 +6,9 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.turbojax.infusev1.commands.InfuseCommand;
-import org.turbojax.infusev1.inventories.ConfirmReviveMenu;
-import org.turbojax.infusev1.inventories.ReviverMenu;
-import org.turbojax.infusev1.items.Enhancer;
-import org.turbojax.infusev1.items.InfuseEffect;
-import org.turbojax.infusev1.items.Reviver;
-import org.turbojax.infusev1.listeners.PlayerDeathListener;
+import org.turbojax.infusev1.inventories.*;
+import org.turbojax.infusev1.items.*;
+import org.turbojax.infusev1.listeners.*;
 
 import java.util.stream.Stream;
 
@@ -28,6 +25,7 @@ public class Infuse extends JavaPlugin {
 
         // Registering listeners
         Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerRespawnListener(), this);
         Bukkit.getPluginManager().registerEvents(new Enhancer(), this);
         Bukkit.getPluginManager().registerEvents(new InfuseEffect(), this);
         Bukkit.getPluginManager().registerEvents(new Reviver(), this);
