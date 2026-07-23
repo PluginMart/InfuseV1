@@ -24,29 +24,30 @@ max_negative: 8
 
 # A list of all the positive effects
 # Use effects from here: https://jd.papermc.io/paper/26.2/org/bukkit/potion/PotionEffectType.html
+# Effects should be in lowercase for proper conversion to NamespacedKeys
 # Warning: Effect names may change across versions.  If you run into errors, look for a list for your version.
 # You can also use custom effects defined in datapacks by their namespaced key
 positive_effects:
-- STRENGTH
-- SPEED
-- HASTE
-- FIRE_RESISTANCE
-- HEALTH_BOOST
-- DOLPHINS_GRACE
-- LUCK
-- WATER_BREATHING
+- strength
+- speed
+- haste
+- fire_resistance
+- health_boost
+- dolphins_grace
+- luck
+- water_breathing
 
 # A list of all the negative effects
 # Use effects from here: https://jd.papermc.io/paper/26.2/org/bukkit/potion/PotionEffectType.html
 negative_effects:
-- WEAKNESS
-- SLOWNESS
-- MINING_FATIGUE
-- JUMP_BOOST
-- SLOW_FALLING
-- GLOWING
-- UNLUCK
-- HUNGER
+- weakness
+- slowness
+- mining_fatigue
+- jump_boost
+- slow_falling
+- glowing
+- unluck
+- hunger
 
 # The default level of each effect
 effect_level: 1
@@ -54,7 +55,7 @@ effect_level: 1
 # Overrides for the "effect_level" config.
 # Lets you change the level that a specific effect (positive or negative) will get boosted to.
 override_levels:
-  HASTE: 2
+  haste: 2
 
 ###
 ### Enhancer Configs
@@ -69,8 +70,8 @@ enhanced_level: 3
 # Overrides for the "boost_level" config.
 # Lets you change the level specific effects get boosted to.
 enhanced_override_levels:
-  STRENGTH: 2
-  HEALTH_BOOST: 2
+  strength: 2
+  health_boost: 2
 
 ###
 ### Recipes
