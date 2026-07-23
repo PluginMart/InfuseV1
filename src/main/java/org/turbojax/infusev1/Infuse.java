@@ -25,6 +25,7 @@ public class Infuse extends JavaPlugin {
 
         // Registering listeners
         Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(), this);
+        Bukkit.getPluginManager().registerEvents(new PlayerJoinListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerRespawnListener(), this);
         Bukkit.getPluginManager().registerEvents(new Enhancer(), this);
         Bukkit.getPluginManager().registerEvents(new InfuseEffect(), this);
