@@ -29,7 +29,7 @@ public class PlayerDeathListener implements Listener {
                 DataManager.ban(dead);
             }
 
-            if (deadScore > 0 && deadScore < MainConfig.maxPositive()) {
+            if (deadScore > 0 && deadScore <= MainConfig.maxPositive()) {
                 // Removing a random positive effect
                 DataManager.removeRandomEffect(dead);
             } else if (deadScore <= 0 && deadScore > -MainConfig.maxNegative()) {
