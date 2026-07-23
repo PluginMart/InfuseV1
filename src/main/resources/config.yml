@@ -45,7 +45,7 @@ negative_effects:
 - JUMP_BOOST
 - SLOW_FALLING
 - GLOWING
-- BAD_LUCK
+- UNLUCK
 - HUNGER
 
 # The default level of each effect
