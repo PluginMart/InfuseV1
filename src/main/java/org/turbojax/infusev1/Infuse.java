@@ -1,17 +1,19 @@
 package org.turbojax.infusev1;
 
-import java.util.stream.Stream;
-
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.turbojax.infusev1.commands.InfuseCommand;
 import org.turbojax.infusev1.inventories.ConfirmReviveMenu;
 import org.turbojax.infusev1.inventories.ReviverMenu;
 import org.turbojax.infusev1.items.Enhancer;
 import org.turbojax.infusev1.items.InfuseEffect;
 import org.turbojax.infusev1.items.Reviver;
 import org.turbojax.infusev1.listeners.PlayerDeathListener;
+
+import java.util.stream.Stream;
 
 public class Infuse extends JavaPlugin {
     public static final Logger LOGGER = LoggerFactory.getLogger("Infuse");
@@ -28,6 +30,11 @@ public class Infuse extends JavaPlugin {
         Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(), this);
         Bukkit.getPluginManager().registerEvents(new ReviverMenu(), this);
         Bukkit.getPluginManager().registerEvents(new ConfirmReviveMenu(0, Bukkit.getOfflinePlayer("TurboJax07")), this);
+
+        // Registering commands
+        getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS.newHandler(e -> {
+            e.registrar().register(InfuseCommand.build());
+        }));
         
         LOGGER.info("Infuse S1 Plugin has been enabled!");
     }
