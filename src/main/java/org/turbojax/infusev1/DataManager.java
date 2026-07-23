@@ -233,6 +233,8 @@ public class DataManager {
 
     public static void resetEffects(Player player) {
         int score = getScore(player);
+        if (score > 0) score = Math.min(score, MainConfig.maxPositive());
+        else score = Math.max(score, -MainConfig.maxNegative());
 
         // Getting the effects to give the player
         List<PotionEffectType> newEffects = new ArrayList<>();
