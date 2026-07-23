@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class DataManager {
     private static final Infuse plugin = Infuse.getInstance();
@@ -190,7 +191,7 @@ public class DataManager {
             .stream()
             .map(UUID::fromString)
             .map(Bukkit::getOfflinePlayer)
-            .toList();
+            .collect(Collectors.toList());
     }
 
     public static void setBanned(List<OfflinePlayer> banned) {
