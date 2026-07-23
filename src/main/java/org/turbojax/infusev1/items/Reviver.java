@@ -1,14 +1,15 @@
 package org.turbojax.infusev1.items;
 
-import io.papermc.paper.datacomponent.DataComponentTypes;
-import io.papermc.paper.datacomponent.item.Consumable;
 import org.bukkit.Material;
-import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.turbojax.infusev1.inventories.ReviverMenu;
 
-public class Reviver extends CustomItem {
+public class Reviver extends CustomItem implements Listener {
     public Reviver() {
         super("reviver");
     }
@@ -24,21 +25,17 @@ public class Reviver extends CustomItem {
             meta.getPersistentDataContainer().set(nsKey, PersistentDataType.BOOLEAN, true);
         });
 
-        Consumable consumable = Consumable.consumable()
-            .consumeSeconds(0.1f)
-            .build();
-
-        item.setData(DataComponentTypes.CONSUMABLE, consumable);
-
         return item;
     }
 
-    @Override
-    public void onConsume(PlayerItemConsumeEvent event) {
+    @EventHandler
+    public void onUse(PlayerInteractEvent event) {
         ItemStack item = event.getItem();
 
         // Skipping items that aren't this one
         if (!item.getPersistentDataContainer().has(nsKey)) return;
+
+        item.subtract();
 
         // Opening the reviver inventory
         event.getPlayer().openInventory(new ReviverMenu().getInventory());
