@@ -222,7 +222,38 @@ public class DataManager {
             setBanned(banned);
             Bukkit.getServer().getBanList(BanListType.PROFILE).pardon(player.getPlayerProfile());
             setScore(player, MainConfig.reviveScore());
+            
+            config.set(player.getUniqueId() + ".needs_reset", true);
         }
+    }
+
+    public static boolean needsReset(Player player) {
+        return config.getBoolean(player.getUniqueId() + ".needs_reset", false);
+    }
+
+    public static void resetEffects(Player player) {
+        int score = getScore(player);
+
+        // Getting the effects to give the player
+        List<PotionEffectType> newEffects = new ArrayList<>();
+        List<PotionEffectType> possibleEffects = new ArrayList<>((score > 0) ? MainConfig.positiveEffects() : MainConfig.negativeEffects());
+
+        for (int i = 0; i < Math.abs(score); i++) {
+            newEffects.add(possibleEffects.remove((int) (Math.random() * possibleEffects.size())));
+        }
+
+        // Overriding the player's effects
+        setEffects(player, newEffects);
+
+        // Removing all infinite effects
+        player.getActivePotionEffects().stream()
+            .filter(e -> e.getDuration() == -1)
+            .forEach(e -> player.removePotionEffect(e.getType()));
+
+        // Equipping the new effects
+        newEffects.forEach(e -> player.addPotionEffect(new PotionEffect(e, -1, MainConfig.getEffectiveLevel(e) - 1)));
+
+        config.set(player.getUniqueId() + ".needs_reset", false);
     }
 
     public static void applyUpdates() {}
