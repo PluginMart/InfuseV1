@@ -6,7 +6,10 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+import org.turbojax.infusev1.DataManager;
 import org.turbojax.infusev1.inventories.ReviverMenu;
+
+import net.kyori.adventure.text.Component;
 
 public class Reviver extends CustomItem implements Listener {
     public Reviver() {
@@ -34,6 +37,12 @@ public class Reviver extends CustomItem implements Listener {
         // Skipping items that aren't this one
         if (item == null) return;
         if (!item.getPersistentDataContainer().has(nsKey)) return;
+
+        // Skipping if no players have been banned
+        if (DataManager.getBanned().size() == 0) {
+            event.getPlayer().sendMessage(Component.text("No players have been banned yet."));
+            return;
+        }
 
         item.subtract();
 

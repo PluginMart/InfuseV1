@@ -1,5 +1,7 @@
 package org.turbojax.infusev1.items;
 
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
@@ -37,6 +39,13 @@ public class Enhancer extends CustomItem implements Listener {
         if (!item.getPersistentDataContainer().has(nsKey)) return;
 
         Player p = event.getPlayer();
+
+        if (DataManager.getScore(p) <= 0) {
+            p.sendMessage(Component.text("You have no positive effects to enhance...", NamedTextColor.RED));
+            event.setCancelled(true);
+            return;
+        }
+
         int duration = MainConfig.enhancerDuration() * 20;
 
         // Enhancing the player's effects
