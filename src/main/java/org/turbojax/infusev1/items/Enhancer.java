@@ -2,18 +2,24 @@ package org.turbojax.infusev1.items;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.format.TextDecoration.State;
+
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.turbojax.infusev1.DataManager;
 import org.turbojax.infusev1.MainConfig;
+
+import java.util.List;
 
 public class Enhancer extends CustomItem implements Listener {
     public Enhancer() {
@@ -23,8 +29,11 @@ public class Enhancer extends CustomItem implements Listener {
     @Override
     public ItemStack createItem() {
         ItemStack item = new ItemStack(Material.POTION);
-        
+
         item.editMeta(PotionMeta.class, meta -> {
+            meta.customName(Component.text("Infuse Enhancer", NamedTextColor.DARK_PURPLE, TextDecoration.BOLD).decoration(TextDecoration.ITALIC, State.FALSE));
+            meta.lore(List.of(Component.text("Makes your effects stronger for " + MainConfig.enhancerDuration() + "s.", NamedTextColor.WHITE).decoration(TextDecoration.ITALIC, State.FALSE)));
+            meta.addItemFlags(ItemFlag.HIDE_ADDITIONAL_TOOLTIP);
             meta.setColor(Color.fromRGB(0x440044));
             meta.getPersistentDataContainer().set(nsKey, PersistentDataType.BOOLEAN, true);
         });
