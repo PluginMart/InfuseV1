@@ -14,6 +14,7 @@ import org.jspecify.annotations.NonNull;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -29,11 +30,6 @@ public class DataManager {
      * @return Whether the configuration was loaded successfully.
      */
     public static boolean load() {
-        if (!plugin.isEnabled()) {
-            Infuse.LOGGER.error("Infuse not loaded, cannot load {}.", file.getName());
-            return false;
-        }
-
         // Creating the file if it doesn't exist.
         // If the function returns false, the load function fails too.
         if (!createFile(false)) {
@@ -60,12 +56,6 @@ public class DataManager {
      * @return Whether or not the config was successfully written.
      */
     public static boolean save() {
-        // Getting a plugin instance to use
-        if (!plugin.isEnabled()) {
-            Infuse.LOGGER.error("Infuse not loaded, cannot save the {}.", file.getName());
-            return false;
-        }
-
         // Creating the file if it doesn't exist.
         // If the function returns false, the load function fails too.
         if (!createFile(false)) {
@@ -92,12 +82,6 @@ public class DataManager {
      * @return Whether or not the file was created successfully.
      */
     public static boolean createFile(boolean replace) {
-        // Getting a plugin instance to use
-        if (!plugin.isEnabled()) {
-            Infuse.LOGGER.error("Infuse not loaded, cannot create default {}.", file.getName());
-            return false;
-        }
-
         // Creating the file if it doesn't exist.
         if (!file.exists()) {
             try {
@@ -162,7 +146,7 @@ public class DataManager {
      * @param type The PotionEffectType to add.
      */
     public static void addEffect(Player player, PotionEffectType type) {
-        List<PotionEffectType> effects = getEffects(player);
+        List<PotionEffectType> effects = new ArrayList<>(getEffects(player));
         if (effects.add(type)) {
             setEffects(player, effects);
             player.addPotionEffect(new PotionEffect(type, -1, MainConfig.getEffectiveLevel(type) - 1));
@@ -172,7 +156,7 @@ public class DataManager {
     }
 
     public static void removeEffect(Player player, PotionEffectType type) {
-        List<PotionEffectType> effects = getEffects(player);
+        List<PotionEffectType> effects = new ArrayList<>(getEffects(player));
         if (effects.remove(type)) {
             setEffects(player, effects);
             player.removePotionEffect(type);
@@ -182,7 +166,7 @@ public class DataManager {
     }
 
     public static void addRandomEffect(Player player, boolean positive) {
-        List<PotionEffectType> possibleEffects = positive ? MainConfig.positiveEffects() : MainConfig.negativeEffects();
+        List<PotionEffectType> possibleEffects = new ArrayList<>(positive ? MainConfig.positiveEffects() : MainConfig.negativeEffects());
 
         // Removing already equipped effects
         possibleEffects.removeAll(getEffects(player));
@@ -195,7 +179,7 @@ public class DataManager {
     }
 
     public static void removeRandomEffect(Player player) {
-        List<PotionEffectType> effects = getEffects(player);
+        List<PotionEffectType> effects = new ArrayList<>(getEffects(player));
         PotionEffectType removed = effects.remove((int)(Math.random() * effects.size()));
 
         removeEffect(player, removed);

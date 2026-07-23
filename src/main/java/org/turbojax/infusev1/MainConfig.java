@@ -31,12 +31,6 @@ public class MainConfig {
      * @return Whether the configuration was loaded successfully.
      */
     public static boolean load() {
-        // Not doing anything if the plugin isn't enabled
-        if (!plugin.isEnabled()) {
-            Infuse.LOGGER.error("{} not loaded, cannot load {}.", plugin.getName(), file.getName());
-            return false;
-        }
-
         // Creating the file if it doesn't exist.
         if (!file.exists()) {
             file.getParentFile().mkdirs();
@@ -64,12 +58,6 @@ public class MainConfig {
      * @return Whether or not the config was successfully written.
      */
     public static boolean save() {
-        // Not doing anything if the plugin isn't enabled
-        if (!plugin.isEnabled()) {
-            Infuse.LOGGER.error("{} not loaded, cannot save {}.", plugin.getName(), file.getName());
-            return false;
-        }
-
         // Creating the file if it doesn't exist.
         if (!file.exists()) {
             try {
