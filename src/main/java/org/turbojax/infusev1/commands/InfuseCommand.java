@@ -35,6 +35,7 @@ public class InfuseCommand {
     public static final Component helpMsg = mm.deserialize("""
             <aqua>/infuse
             <aqua> |- help<white>: Shows the help message
+            <aqua> |- reload<white>: Reloads the config
             <aqua> |- revive <gold>\\<player><white>: Revives a dead player
             <aqua> |- setscore <gold>\\<player> \\<score><white>: Sets a player's score.  Also rerolls their effects.
             <aqua> |- getscore <gold>\\<player><white>: Gets a player's score
@@ -45,6 +46,9 @@ public class InfuseCommand {
         return Commands.literal("infuse")
             .then(Commands.literal("help")
                 .executes(InfuseCommand::help)
+            )
+            .then(Commands.literal("reload")
+                .executes(InfuseCommand::reload)
             )
             .then(Commands.literal("revive")
                 .then(Commands.argument("player", new BannedPlayerArgumentType())
@@ -76,6 +80,15 @@ public class InfuseCommand {
     public static int help(CommandContext<CommandSourceStack> ctx) {
         CommandSender sender = ctx.getSource().getSender();
         sender.sendMessage(helpMsg);
+
+        return 1;
+    }
+
+    public static int reload(CommandContext<CommandSourceStack> ctx) {
+        CommandSender sender = ctx.getSource().getSender();
+
+        MainConfig.load();
+        sender.sendMessage(Component.text("Reloaded the config.", NamedTextColor.GREEN));
 
         return 1;
     }
