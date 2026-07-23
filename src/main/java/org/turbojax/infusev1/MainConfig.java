@@ -8,17 +8,16 @@ import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.CraftingRecipe;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.potion.PotionEffectType;
+import org.jetbrains.annotations.Nullable;
+import org.turbojax.infusev1.items.CustomItem;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 public class MainConfig {
     private static final Infuse plugin = Infuse.getInstance();
@@ -159,99 +158,87 @@ public class MainConfig {
         return Math.max(enhancedLevel(), 1);
     }
 
-    public static CraftingRecipe createRecipe(String key, ItemStack result) {
-        if (!config.contains("recipes." + key)) return null;
+    @Nullable
+    public static CraftingRecipe createRecipe(CustomItem item) {
+        String baseKey = "recipes." + item.getKey().getKey();
+        if (!config.contains(baseKey)) return null;
 
-        ConfigurationSection recipeSection = config.getConfigurationSection("recipes." + key);
-
-        String type = recipeSection.getString("type");
+        String type = config.getString(baseKey + ".type");
 
         if (type == null || !(type.equals("shaped") || type.equals("shapeless"))) {
-            Infuse.LOGGER.warn("Invalid recipe '{}'.  Invalid or missing 'type' key.  Allowed values are 'shaped' or 'shapeless'.", key);
+            Infuse.LOGGER.warn("Invalid recipe '{}'.  Invalid or missing 'type' key.  Allowed values are 'shaped' or 'shapeless'.", item.getKey().getKey());
             return null;
         }
 
-        
         if (type.equals("shaped")) {
-            ShapedRecipe recipe = new ShapedRecipe(new NamespacedKey(plugin, key), result);
-
-            // Handling missing sections
-            if (!recipeSection.contains("shape")) {
-                Infuse.LOGGER.warn("Shaped recipe '{}' is missing the 'shape' key.");
-                return null;
-            }
-            
-            if (!recipeSection.contains("ingredients")) {
-                Infuse.LOGGER.warn("Shaped recipe '{}' is missing the 'ingredients' key.");
-                return null;
-            }
-
-            // Parsing shape
-            String[] shape = recipeSection.getStringList("shape").stream().toArray(String[]::new);
-            if (shape.length != 3 || shape[0].length() != 3 || shape[1].length() != 3 || shape[2].length() != 3) {
-                Infuse.LOGGER.warn("Invalid shape config.  It needs to be a list of three strings that are each 3 characters long.");
-                return null;
-            }
-
-            recipe.shape(shape);
-
-            String fullShape = String.join("", shape);
-
-            // Parsing ingredients
-            ConfigurationSection ingredients = recipeSection.getConfigurationSection("ingredients");
-            Stream<Map.Entry<Character,Material>> parts = ingredients.getKeys(false)
-                .stream()
-                .map(k -> {
-                    String matKey = ingredients.getString(k);
-                    Material mat = Registry.MATERIAL.get(NamespacedKey.fromString(matKey));
-                    if (!fullShape.contains(k)) mat = Material.AIR; // setting unused keys to Material.AIR
-                    if (mat != null) return Map.<Character,Material>entry(k.charAt(0), mat);
-                    
-                    Infuse.LOGGER.warn("Invalid material '{}' for key '{}' in shaped recipe '{}'", matKey, k, key);
-                    return null;
-                });
-
-            if (parts.filter(Objects::isNull).findAny().isPresent()) {
-                Infuse.LOGGER.warn("Cannot create recipe {} due to invalid materials.", key);
-                return null;
-            }
-
-            parts.filter(e -> {
-                    if (e.getValue() != Material.AIR) return true;
-
-                    Infuse.LOGGER.warn("Ignoring material '{}' in recipe '{}' because it is not used.", e.getKey(), key);
-                    return false;
-                })
-                .forEach(e -> recipe.setIngredient(e.getKey(), e.getValue()));
-
-            return recipe;
+            return getShapedRecipe(item);
         } else {
-            ShapelessRecipe recipe = new ShapelessRecipe(new NamespacedKey(plugin, key), result);
-
-            if (!recipeSection.contains("ingredients")) {
-                Infuse.LOGGER.warn("Shapeless recipe '{}' is missing the 'ingredients' key.", key);
-                return null;
-            }
-
-            Stream<Material> mats = recipeSection.getStringList("ingredients")
-                .stream()
-                .map(k -> {
-                    Material mat = Registry.MATERIAL.get(NamespacedKey.fromString(k));
-                    if (mat != null) return mat;
-
-                    Infuse.LOGGER.warn("Invalid material '{}' for recipe '{}'", k, key);
-                    return null;
-                });
-
-            if (mats.filter(Objects::isNull).findAny().isPresent()) {
-                Infuse.LOGGER.warn("Cannot create recipe {} due to invalid materials.", key);
-                return null;
-            }
-
-            mats.forEach(recipe::addIngredient);
-
-            return recipe;
+            return getShapelessRecipe(item);
         }
+    }
+
+    public static ShapedRecipe getShapedRecipe(CustomItem item) {
+        String baseKey = item.getKey().getKey();
+        ShapedRecipe recipe = new ShapedRecipe(item.getKey(), item.createItem());
+
+        // Handling missing sections
+        if (!config.contains("recipes." + baseKey + ".shape")) {
+            Infuse.LOGGER.warn("Shaped recipe '{}' is missing the 'shape' key.", baseKey);
+            return null;
+        }
+        
+        if (!config.contains("recipes." + baseKey + ".ingredients")) {
+            Infuse.LOGGER.warn("Shaped recipe '{}' is missing the 'ingredients' key.", baseKey);
+            return null;
+        }
+
+        // Parsing shape
+        String[] shape = config.getStringList("recipes." + baseKey + ".shape").stream().toArray(String[]::new);
+        if (shape.length != 3 || shape[0].length() != 3 || shape[1].length() != 3 || shape[2].length() != 3) {
+            Infuse.LOGGER.warn("Invalid shape config.  It needs to be a list of three strings that are each 3 characters long.");
+            return null;
+        }
+
+        recipe.shape(shape);
+
+        ConfigurationSection ingredientsConfig = config.getConfigurationSection("recipes." + baseKey + ".ingredients");
+        for (String key : ingredientsConfig.getKeys(false)) {
+            char ingredientLabel = key.charAt(0);
+
+            String materialName = ingredientsConfig.getString(key);
+            if (materialName == null) {
+                Infuse.LOGGER.error("The item '{}' has failed to register its recipe.  An ingredient has not been defined properly.", baseKey);
+                return null;
+            }
+
+            Material ingredientMaterial = Material.valueOf(materialName.toUpperCase());
+            recipe.setIngredient(ingredientLabel, ingredientMaterial);
+        }
+
+        return recipe;
+    }
+
+    public static ShapelessRecipe getShapelessRecipe(CustomItem item) {
+        String baseKey = item.getKey().getKey();
+        ShapelessRecipe recipe = new ShapelessRecipe(item.getKey(), item.createItem());
+
+        if (!config.contains("recipes." + baseKey + ".ingredients")) {
+            Infuse.LOGGER.warn("Shapeless recipe '{}' is missing the 'ingredients' key.", baseKey);
+            return null;
+        }
+
+        List<String> ingredients = config.getStringList("recipes." + baseKey + ".ingredients");
+        for (String ingredient : ingredients) {
+            Material mat = Registry.MATERIAL.get(NamespacedKey.fromString(ingredient.toLowerCase()));
+            if (mat == null) {
+                Infuse.LOGGER.warn("Invalid material '{}' for recipe '{}'", ingredient, baseKey);
+                return null;
+            }
+
+            recipe.addIngredient(mat);
+        }
+
+        return recipe;
     }
 
     public static void applyUpdates() {}

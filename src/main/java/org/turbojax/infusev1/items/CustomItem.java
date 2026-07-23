@@ -20,7 +20,7 @@ public abstract class CustomItem {
     public abstract ItemStack createItem();
 
     public CraftingRecipe createRecipe() {
-        return MainConfig.createRecipe(key, createItem());
+        return MainConfig.createRecipe(this);
     }
 
     public NamespacedKey getKey() {

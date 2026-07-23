@@ -18,7 +18,7 @@ public class PlayerJoinListener implements Listener {
         DataManager.resetEffects(player);
     }
 
-
+    @EventHandler
     public void giveRecipes(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         player.discoverRecipe(new Enhancer().getKey());
