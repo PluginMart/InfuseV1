@@ -32,7 +32,7 @@ public class PlayerDeathListener implements Listener {
             if (deadScore > 0 && deadScore < MainConfig.maxPositive()) {
                 // Removing a random positive effect
                 DataManager.removeRandomEffect(dead);
-            } else if (deadScore > -MainConfig.maxNegative()) {
+            } else if (deadScore <= 0 && deadScore > -MainConfig.maxNegative()) {
                 // Giving a random negative effect
                 DataManager.addRandomEffect(dead, false);
             }
@@ -45,7 +45,7 @@ public class PlayerDeathListener implements Listener {
             if (killerScore < 0 && killerScore >= -MainConfig.maxNegative()) {
                 // Removing a random negative effect
                 DataManager.removeRandomEffect(killer);
-            } else if (killerScore < MainConfig.maxPositive()) {
+            } else if (killerScore >= 0 && killerScore < MainConfig.maxPositive()) {
                 // Giving a random positive effect
                 DataManager.addRandomEffect(killer, true);
             }
