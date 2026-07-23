@@ -36,28 +36,33 @@ public class InfuseCommand {
             <aqua> |- revive <gold>\\<player><white>: Revives a dead player
             <aqua> |- setscore <gold>\\<player> \\<score><white>: Sets a player's score.  Also rerolls their effects.
             <aqua> |- getscore <gold>\\<player><white>: Gets a player's score
-            <aqua> \\- give <gold>\\<player> \\<item> [count]<white>: Gives a plasyer an infuse item.
+            <aqua> \\- give <gold>\\<player> \\<item> [count]<white>: Gives a player an infuse item.
             """);
 
     public static LiteralCommandNode<CommandSourceStack> build() {
         return Commands.literal("infuse")
             .then(Commands.literal("help")
+                .requires(c -> c.getSender().hasPermission("infusev1.help"))
                 .executes(InfuseCommand::help)
             )
             .then(Commands.literal("reload")
+                .requires(c -> c.getSender().hasPermission("infusev1.reload"))
                 .executes(InfuseCommand::reload)
             )
             .then(Commands.literal("revive")
+                .requires(c -> c.getSender().hasPermission("infusev1.revive"))
                 .then(Commands.argument("player", new BannedPlayerArgumentType())
                     .executes(c -> revive(c, c.getArgument("player", OfflinePlayer.class)))
                 )
             )
             .then(Commands.literal("getscore")
+                .requires(c -> c.getSender().hasPermission("infusev1.getscore"))
                 .then(Commands.argument("player", ArgumentTypes.players())
                     .executes(c -> getScore(c, c.getArgument("player", PlayerSelectorArgumentResolver.class)))
                 )
             )
             .then(Commands.literal("setscore")
+                .requires(c -> c.getSender().hasPermission("infusev1.setscore"))
                 .then(Commands.argument("player", ArgumentTypes.players())
                     .then(Commands.argument("score", IntegerArgumentType.integer(MainConfig.minScore(), MainConfig.maxScore()))
                         .executes(c -> setScore(c, c.getArgument("player", PlayerSelectorArgumentResolver.class), c.getArgument("score", Integer.class)))
@@ -65,6 +70,7 @@ public class InfuseCommand {
                 )
             )
             .then(Commands.literal("give")
+                .requires(c -> c.getSender().hasPermission("infusev1.give"))
                 .then(Commands.argument("player", ArgumentTypes.players())
                     .then(Commands.argument("item", new InfuseItemArgumentType())
                         .executes(c -> give(c, c.getArgument("player", PlayerSelectorArgumentResolver.class), c.getArgument("item", CustomItem.class), 1))

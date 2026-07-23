@@ -7,3 +7,16 @@ commands:
   infuse:
     description: Base command for Infuse
     usage: /infuse help
+permissions:
+  infusev1.help:
+    description: "Gives players access to `/infuse help`"
+  infusev1.reload:
+    description: "Gives players access to `/infuse reload`"
+  infusev1.revive:
+    description: "Gives players access to `/infuse revive`"
+  infusev1.getscore:
+    description: "Gives players access to `/infuse getscore`"
+  infusev1.setscore:
+    description: "Gives players access to `/infuse setscore`"
+  infusev1.give:
+    description: "Gives players access to `/infuse give`"
