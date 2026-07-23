@@ -28,6 +28,9 @@ public class Infuse extends JavaPlugin {
 
         // Registering listeners
         Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(), this);
+        Bukkit.getPluginManager().registerEvents(new Enhancer(), this);
+        Bukkit.getPluginManager().registerEvents(new InfuseEffect(), this);
+        Bukkit.getPluginManager().registerEvents(new Reviver(), this);
         Bukkit.getPluginManager().registerEvents(new ReviverMenu(), this);
         Bukkit.getPluginManager().registerEvents(new ConfirmReviveMenu(0, Bukkit.getOfflinePlayer("TurboJax07")), this);
 

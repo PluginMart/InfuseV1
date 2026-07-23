@@ -3,6 +3,8 @@ package org.turbojax.infusev1.items;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.PotionMeta;
@@ -10,7 +12,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.turbojax.infusev1.DataManager;
 import org.turbojax.infusev1.MainConfig;
 
-public class InfuseEffect extends CustomItem {
+public class InfuseEffect extends CustomItem implements Listener {
     public InfuseEffect() {
         super("infuse_effect");
     }
@@ -28,7 +30,7 @@ public class InfuseEffect extends CustomItem {
         return item;
     }
 
-    @Override
+    @EventHandler
     public void onConsume(PlayerItemConsumeEvent event) {
         ItemStack item = event.getItem();
 
