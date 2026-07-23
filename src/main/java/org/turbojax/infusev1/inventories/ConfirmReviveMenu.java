@@ -51,6 +51,7 @@ public class ConfirmReviveMenu implements InventoryHolder, Listener {
         return inventory;
     }
 
+    @EventHandler
     public void onClick(InventoryClickEvent event) {
         if (!(event.getInventory().getHolder() instanceof ConfirmReviveMenu menu)) return;
         if (event.getClickedInventory() == null) return;
