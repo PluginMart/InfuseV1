@@ -85,9 +85,9 @@ recipes:
       - "DBD"
       - "DND"
     ingredients:
-      D: DIAMOND_BLOCK
-      N: NETHERITE_INGOT
-      B: GLASS_BOTTLE
+      D: diamond_block
+      N: netherite_ingot
+      B: glass_bottle
   reviver:
     type: shaped
     shape:
@@ -95,11 +95,11 @@ recipes:
       - "DND"
       - "EBG"
     ingredients:
-      D: DRAGON_BREATH
-      N: NETHER_STAR
-      B: NETHERITE_BLOCK
-      G: GHAST_TEAR
-      E: FERMENTED_SPIDER_EYE
+      D: dragon_breath
+      N: nether_star
+      B: netherite_block
+      G: ghast_tear
+      E: fermented_spider_eye
   enhancer:
     type: shaped
     shape:
@@ -107,6 +107,6 @@ recipes:
       - "GBG"
       - "NGN"
     ingredients:
-      G: ENCHANTED_GOLDEN_APPLE
-      N: NETHERITE_INGOT
-      B: GLASS_BOTTLE
+      G: enchanted_golden_apple
+      N: netherite_ingot
+      B: glass_bottle
