@@ -16,6 +16,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.Nullable;
 import org.turbojax.infusev1.DataManager;
 import org.turbojax.infusev1.Infuse;
 import org.turbojax.infusev1.MainConfig;
@@ -57,7 +58,9 @@ public class InfuseCommand {
             )
             .then(Commands.literal("getscore")
                 .requires(c -> c.getSender().hasPermission("infusev1.getscore"))
+                .executes(c -> getScore(c, null))
                 .then(Commands.argument("player", ArgumentTypes.players())
+                    .requires(c -> c.getSender().hasPermission("infusev1.getscore.other"))
                     .executes(c -> getScore(c, c.getArgument("player", PlayerSelectorArgumentResolver.class)))
                 )
             )
@@ -113,16 +116,25 @@ public class InfuseCommand {
         return 1;
     }
 
-    public static int getScore(CommandContext<CommandSourceStack> ctx, PlayerSelectorArgumentResolver resolver) {
+    public static int getScore(CommandContext<CommandSourceStack> ctx, @Nullable PlayerSelectorArgumentResolver resolver) {
         CommandSender sender = ctx.getSource().getSender();
 
         List<Player> targets;
 
-        try {
-            targets = resolver.resolve(ctx.getSource());
-        } catch (CommandSyntaxException e) {
-            sender.sendMessage(msgSerializer.deserialize(e.getRawMessage()));
-            return 1;
+        if (resolver == null) {
+            if (sender instanceof Player p) {
+                targets = List.of(p);
+            } else {
+                sender.sendMessage(Component.text("You must specify a player to get the score of.", NamedTextColor.RED));
+                return 1;
+            }
+        } else {
+            try {
+                targets = resolver.resolve(ctx.getSource());
+            } catch (CommandSyntaxException e) {
+                sender.sendMessage(msgSerializer.deserialize(e.getRawMessage()));
+                return 1;
+            }
         }
         
         targets.forEach(p -> sender.sendMessage(p.getName() + "'s score is " + DataManager.getScore(p)));
