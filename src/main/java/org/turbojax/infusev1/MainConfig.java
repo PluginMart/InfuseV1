@@ -12,6 +12,7 @@ import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.inventory.ShapelessRecipe;
 import org.bukkit.potion.PotionEffectType;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 import org.turbojax.infusev1.items.CustomItem;
 
 import java.io.File;
@@ -193,7 +194,7 @@ public class MainConfig {
         }
 
         // Parsing shape
-        String[] shape = config.getStringList("recipes." + baseKey + ".shape").stream().toArray(String[]::new);
+        String[] shape = config.getStringList("recipes." + baseKey + ".shape").toArray(String[]::new);
         if (shape.length != 3 || shape[0].length() != 3 || shape[1].length() != 3 || shape[2].length() != 3) {
             Infuse.LOGGER.warn("Invalid shape config.  It needs to be a list of three strings that are each 3 characters long.");
             return null;
@@ -211,8 +212,10 @@ public class MainConfig {
                 return null;
             }
 
-            Material ingredientMaterial = Material.valueOf(materialName.toUpperCase());
-            recipe.setIngredient(ingredientLabel, ingredientMaterial);
+            Material mat = getMaterial(materialName, baseKey);
+            if (mat == null) return null;
+
+            recipe.setIngredient(ingredientLabel, mat);
         }
 
         return recipe;
@@ -229,16 +232,30 @@ public class MainConfig {
 
         List<String> ingredients = config.getStringList("recipes." + baseKey + ".ingredients");
         for (String ingredient : ingredients) {
-            Material mat = Registry.MATERIAL.get(NamespacedKey.fromString(ingredient.toLowerCase()));
-            if (mat == null) {
-                Infuse.LOGGER.warn("Invalid material '{}' for recipe '{}'", ingredient, baseKey);
-                return null;
-            }
+            Material mat = getMaterial(ingredient, baseKey);
+            if (mat == null) return null;
 
             recipe.addIngredient(mat);
         }
 
         return recipe;
+    }
+
+    private static @Nullable Material getMaterial(@NonNull String name, String recipe) {
+        NamespacedKey key = NamespacedKey.fromString(name);
+
+        if (key == null) {
+            Infuse.LOGGER.warn("Invalid NamespacedKey '{}' in recipe '{}'", name, recipe);
+            return null;
+        }
+
+        Material material =  Registry.MATERIAL.get(key);
+        if (material == null) {
+            Infuse.LOGGER.warn("Invalid material '{}' in recipe '{}'", name, recipe);
+            return null;
+        }
+
+        return material;
     }
 
     public static void applyUpdates() {}
