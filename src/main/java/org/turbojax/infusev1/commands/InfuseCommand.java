@@ -34,10 +34,10 @@ public class InfuseCommand {
             <aqua>/infuse
             <aqua> |- help<white>: Shows the help message
             <aqua> |- reload<white>: Reloads the config
-            <aqua> |- revive <gold>\\<player><white>: Revives a dead player
-            <aqua> |- setscore <gold>\\<player> \\<score><white>: Sets a player's score.  Also rerolls their effects.
-            <aqua> |- getscore <gold>\\<player><white>: Gets a player's score
-            <aqua> \\- give <gold>\\<player> \\<item> [count]<white>: Gives a player an infuse item.
+            <aqua> |- revive <gold>\\<target><white>: Revives a dead player
+            <aqua> |- setscore <gold>\\<targets> \\<score><white>: Sets a player's score.  Also rerolls their effects.
+            <aqua> |- getscore <gold>[targets]<white>: Gets a player's score
+            <aqua> \\- give <gold>\\<targets> \\<item> [count]<white>: Gives a player an infuse item.
             """);
 
     public static LiteralCommandNode<CommandSourceStack> build() {
@@ -52,33 +52,33 @@ public class InfuseCommand {
             )
             .then(Commands.literal("revive")
                 .requires(c -> c.getSender().hasPermission("infusev1.revive"))
-                .then(Commands.argument("player", new BannedPlayerArgumentType())
-                    .executes(c -> revive(c, c.getArgument("player", OfflinePlayer.class)))
+                .then(Commands.argument("target", new BannedPlayerArgumentType())
+                    .executes(c -> revive(c, c.getArgument("target", OfflinePlayer.class)))
                 )
             )
             .then(Commands.literal("getscore")
                 .requires(c -> c.getSender().hasPermission("infusev1.getscore"))
                 .executes(c -> getScore(c, null))
-                .then(Commands.argument("player", ArgumentTypes.players())
+                .then(Commands.argument("targets", ArgumentTypes.players())
                     .requires(c -> c.getSender().hasPermission("infusev1.getscore.other"))
-                    .executes(c -> getScore(c, c.getArgument("player", PlayerSelectorArgumentResolver.class)))
+                    .executes(c -> getScore(c, c.getArgument("targets", PlayerSelectorArgumentResolver.class)))
                 )
             )
             .then(Commands.literal("setscore")
                 .requires(c -> c.getSender().hasPermission("infusev1.setscore"))
-                .then(Commands.argument("player", ArgumentTypes.players())
+                .then(Commands.argument("targets", ArgumentTypes.players())
                     .then(Commands.argument("score", IntegerArgumentType.integer(MainConfig.minScore(), MainConfig.maxScore()))
-                        .executes(c -> setScore(c, c.getArgument("player", PlayerSelectorArgumentResolver.class), c.getArgument("score", Integer.class)))
+                        .executes(c -> setScore(c, c.getArgument("targets", PlayerSelectorArgumentResolver.class), c.getArgument("score", Integer.class)))
                     )
                 )
             )
             .then(Commands.literal("give")
                 .requires(c -> c.getSender().hasPermission("infusev1.give"))
-                .then(Commands.argument("player", ArgumentTypes.players())
+                .then(Commands.argument("targets", ArgumentTypes.players())
                     .then(Commands.argument("item", new InfuseItemArgumentType())
-                        .executes(c -> give(c, c.getArgument("player", PlayerSelectorArgumentResolver.class), c.getArgument("item", CustomItem.class), 1))
+                        .executes(c -> give(c, c.getArgument("targets", PlayerSelectorArgumentResolver.class), c.getArgument("item", CustomItem.class), 1))
                         .then(Commands.argument("count", IntegerArgumentType.integer(1))
-                            .executes(c -> give(c, c.getArgument("player", PlayerSelectorArgumentResolver.class), c.getArgument("item", CustomItem.class), c.getArgument("count", Integer.class)))
+                            .executes(c -> give(c, c.getArgument("targets", PlayerSelectorArgumentResolver.class), c.getArgument("item", CustomItem.class), c.getArgument("count", Integer.class)))
                         )
                     )
                 )
