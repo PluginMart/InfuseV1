@@ -9,14 +9,23 @@ commands:
     usage: /infuse help
 permissions:
   infusev1.help:
+    default: true
     description: "Gives players access to `/infuse help`"
   infusev1.reload:
+    default: op
     description: "Gives players access to `/infuse reload`"
   infusev1.revive:
+    default: op
     description: "Gives players access to `/infuse revive`"
   infusev1.getscore:
+    default: true
     description: "Gives players access to `/infuse getscore`"
+  infusev1.getscore.other:
+    default: op
+    description: "Lets you use `/infuse getscore` on other players"
   infusev1.setscore:
+    default: op
     description: "Gives players access to `/infuse setscore`"
   infusev1.give:
+    default: op
     description: "Gives players access to `/infuse give`"
