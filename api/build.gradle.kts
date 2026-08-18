@@ -4,7 +4,7 @@ plugins {
 }
 
 dependencies {
-    implementation(libs.configurate)
+    implementation(libs.configurate.yaml)
 }
 
 publishing {

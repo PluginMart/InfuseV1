@@ -6,6 +6,14 @@ dependencies {
     implementation(libs.fabric.loader)
     implementation(libs.fabric.api)
     implementation(project(":api"))
+
+    include(project(":api"))
+
+    include(libs.configurate.core)
+    include(libs.configurate.yaml)
+    include(libs.checkerQual)
+    include(libs.geantyref)
+    include(libs.option)
 }
 
 tasks.processResources {
@@ -22,4 +30,6 @@ tasks.jar {
     from("LICENSE") {
         rename { "${it}_${project.name}" }
     }
+
+    archiveFileName = "${rootProject.name}-fabric-${version}.jar"
 }
