@@ -1,7 +1,14 @@
 [versions]
-run-paper = "3.0.2"
-paperweight = "2.0.0-beta.21"
+minecraft = "26.2"
+fabric_api = "0.157.0+26.2"
+fabric_loader = "0.19.3"
+fabric_loom = "1.17-SNAPSHOT"
+configurate = "4.2.0"
 
-[plugins]
-paperweight = { id = "io.papermc.paperweight.userdev", version.ref = "paperweight" }
-run-paper = { id = "xyz.jpenilla.run-paper", version.ref = "run-paper" }
+[libraries]
+minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft"}
+fabric_loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric_loader"}
+fabric_api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric_api" }
+configurate = { module = "org.spongepowered:configurate-yaml", version.ref = "configurate" }
+
+build_loom = { module = "net.fabricmc.fabric-loom:net.fabricmc.fabric-loom.gradle.plugin", version.ref = "fabric_loom"}

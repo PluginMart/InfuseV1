@@ -1,0 +1,15 @@
+{
+  "parent": "recipes/root",
+  "criteria": {
+    "give_immediately": {
+      "trigger": "minecraft:tick"
+    }
+  },
+  "rewards": {
+    "recipes": [
+      "infusev1:enhancer",
+      "infusev1:infuse_effect",
+      "infusev1:reviver"
+    ]
+  }
+}

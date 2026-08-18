@@ -1,0 +1,124 @@
+# Starting score of any player.  A positive score will give the player that many positive effects.  A negative score will give the player that many negative effects.
+# Can be any number between -max_negative and max_positive
+starting_score: 0
+
+# Max and minimum scores.  A player's score cannot go past these bounds.
+max_score: 8
+min_score: -9
+
+# The score that a player will get banned at.
+# Setting the score to anything >= 0 will disable deathbans.
+# If the config is lower than min_score, players will not be banned.
+ban_score: -9
+
+# The score that a player will be set to when a reviver is used on them.
+revive_score: 0
+
+# Maximum number of positive effects a player can have.
+# Should be between 0 and the number of effects in positive_effects
+max_positive: 8
+
+# Maximum number of negative effects a player can have.
+# Should be between 0 and the number of effects in negative_effects
+max_negative: 8
+
+# A list of all the positive effects
+# Use effects from here: https://jd.papermc.io/paper/26.2/org/bukkit/potion/PotionEffectType.html
+# Effects should be in lowercase for proper conversion to NamespacedKeys
+# Warning: Effect names may change across versions.  If you run into errors, look for a list for your version.
+# You can also use custom effects defined in datapacks by their namespaced key
+positive_effects:
+- strength
+- speed
+- haste
+- fire_resistance
+- health_boost
+- dolphins_grace
+- luck
+- water_breathing
+
+# A list of all the negative effects
+# Use effects from here: https://jd.papermc.io/paper/26.2/org/bukkit/potion/PotionEffectType.html
+negative_effects:
+- weakness
+- slowness
+- mining_fatigue
+- jump_boost
+- slow_falling
+- glowing
+- unluck
+- hunger
+
+# The default level of each effect
+effect_level: 1
+
+# Overrides for the "effect_level" config.
+# Lets you change the level that a specific effect (positive or negative) will get boosted to.
+override_levels:
+  haste: 2
+
+###
+### Enhancer Configs
+###
+
+# The duration of the enhancer's effects in seconds
+enhancer_duration: 90
+
+# The level that your effects will be boosted to
+enhanced_level: 3
+
+# Overrides for the "boost_level" config.
+# Lets you change the level specific effects get boosted to.
+enhanced_override_levels:
+  strength: 2
+  health_boost: 2
+
+###
+### Recipes
+###
+
+# IMPORTANT: Recipes will not be updated until the server restarts!
+recipes:
+  infuse_effect:
+    # Defines the type of recipe.
+    # Can be "shaped" or "shapeless"
+    # For shaped recipes:
+    #   'shape' is a list of strings representing each row of the recipe.
+    #   'ingredients' is a map of characters to items in the recipe.
+    # For shapeless recipes:
+    #   'ingredients' is a list of items in the recipe.
+    #
+    # Item tags are supported.
+    # This works pretty similarly to recipes in datapacks, except the keys are a bit different.
+    # See https://minecraft.wiki/w/Recipe_(Java_Edition)#crafting_shaped for info on recipes.
+    type: shaped
+    shape:
+      - "DND"
+      - "DBD"
+      - "DND"
+    ingredients:
+      D: diamond_block
+      N: netherite_ingot
+      B: glass_bottle
+  reviver:
+    type: shaped
+    shape:
+      - "GBE"
+      - "DND"
+      - "EBG"
+    ingredients:
+      D: dragon_breath
+      N: nether_star
+      B: netherite_block
+      G: ghast_tear
+      E: fermented_spider_eye
+  enhancer:
+    type: shaped
+    shape:
+      - "NGN"
+      - "GBG"
+      - "NGN"
+    ingredients:
+      G: enchanted_golden_apple
+      N: netherite_ingot
+      B: glass_bottle
