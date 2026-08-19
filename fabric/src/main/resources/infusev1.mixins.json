@@ -3,6 +3,9 @@
   "package": "org.turbojax.infusev1.mixins",
   "server": [
     "ConsumableMixin",
+    "ItemStackMixin",
+    "MinecraftServerMixin",
+    "PlayerListMixin",
     "PlayerMixin",
     "RecipeManagerMixin",
     "ServerPlayerMixin"

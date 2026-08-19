@@ -14,7 +14,7 @@ import org.turbojax.infusev1.items.CustomItem;
 @Mixin(Consumable.class)
 public abstract class ConsumableMixin {
     @Inject(method="onConsume", at= @At(value = "HEAD"))
-    private void handleConsumeEvent(Level level, LivingEntity user, ItemStack stack, CallbackInfoReturnable<ItemStack> cir) {
+    private void infusev1_handleConsumeEvent(Level level, LivingEntity user, ItemStack stack, CallbackInfoReturnable<ItemStack> cir) {
         if (!(user instanceof ServerPlayer player)) return;
 
         CustomItem ci = CustomItem.fromItemStack(stack);

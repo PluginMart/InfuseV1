@@ -1,6 +1,5 @@
 [versions]
 minecraft = "26.2"
-fabric_api = "0.157.0+26.2"
 fabric_loader = "0.19.3"
 configurate = "4.2.0"
 checkerQual="3.51.1"
@@ -10,7 +9,6 @@ fabric_loom = "1.17-SNAPSHOT"
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
 fabric_loader = { module = "net.fabricmc:fabric-loader", version.ref = "fabric_loader" }
-fabric_api = { module = "net.fabricmc.fabric-api:fabric-api", version.ref = "fabric_api" }
 configurate-core = { module = "org.spongepowered:configurate-core", version.ref = "configurate" }
 configurate-yaml = { module = "org.spongepowered:configurate-yaml", version.ref = "configurate" }
 checkerQual = { module = "org.checkerframework:checker-qual", version.ref = "checkerQual" }

@@ -4,7 +4,6 @@ plugins {
 
 dependencies {
     implementation(libs.fabric.loader)
-    implementation(libs.fabric.api)
     implementation(project(":common"))
 
     include(project(":common"))
