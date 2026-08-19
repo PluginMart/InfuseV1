@@ -5,9 +5,9 @@ plugins {
 dependencies {
     implementation(libs.fabric.loader)
     implementation(libs.fabric.api)
-    implementation(project(":api"))
+    implementation(project(":common"))
 
-    include(project(":api"))
+    include(project(":common"))
 
     include(libs.configurate.core)
     include(libs.configurate.yaml)
@@ -22,14 +22,4 @@ tasks.processResources {
     filesMatching("fabric.mod.json") {
         expand("version" to version)
     }
-}
-
-tasks.jar {
-    inputs.property("projectName", project.name)
-
-    from("LICENSE") {
-        rename { "${it}_${project.name}" }
-    }
-
-    archiveFileName = "${rootProject.name}-fabric-${version}.jar"
 }

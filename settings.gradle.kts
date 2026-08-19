@@ -9,4 +9,4 @@ pluginManagement {
 
 rootProject.name = "infusev1"
 
-include("api", "impl")
+include("common", "fabric")
