@@ -19,7 +19,7 @@ public abstract class ImmutableConfig {
     protected ConfigurationNode root;
 
     protected ImmutableConfig(Path file) {
-        plugin = InfuseProvider.get();
+        plugin = Infuse.getInstance();
         this.file = file;
 
         loader = YamlConfigurationLoader.builder()

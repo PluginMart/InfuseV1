@@ -19,11 +19,10 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ResolvableProfile;
 import org.jspecify.annotations.NonNull;
 import org.turbojax.infusev1.Infuse;
-import org.turbojax.infusev1.InfuseProvider;
 import org.turbojax.infusev1.items.Reviver;
 
 public class ConfirmReviveMenu extends ChestMenu {
-    private final Infuse infuse = InfuseProvider.get();
+    private final Infuse infuse = Infuse.getInstance();
     private final Container container;
     private final int page;
     private final GameProfile profile;

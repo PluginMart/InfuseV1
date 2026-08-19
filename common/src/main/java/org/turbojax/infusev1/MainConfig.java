@@ -20,7 +20,7 @@ import java.util.*;
 
 public class MainConfig extends ImmutableConfig {
     public MainConfig() {
-        super(InfuseProvider.get().configFile());
+        super(Infuse.getInstance().configFile());
     }
 
     @Override

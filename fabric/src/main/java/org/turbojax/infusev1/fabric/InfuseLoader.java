@@ -11,27 +11,14 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import org.turbojax.infusev1.DataManager;
 import org.turbojax.infusev1.Infuse;
-import org.turbojax.infusev1.InfuseProvider;
-import org.turbojax.infusev1.MainConfig;
 import org.turbojax.infusev1.commands.InfuseCommand;
 import org.turbojax.infusev1.items.CustomItem;
 
 import java.nio.file.Path;
 
-public class InfuseLoader implements DedicatedServerModInitializer, Infuse {
-    private final MainConfig config;
-    private final DataManager dataManager;
-
+public class InfuseLoader extends Infuse implements DedicatedServerModInitializer {
     public static MinecraftServer server;
-
-    public InfuseLoader() {
-        InfuseProvider.set(this);
-
-        config = new MainConfig();
-        dataManager = new DataManager();
-    }
 
     @Override
     public void onInitializeServer() {
@@ -91,16 +78,6 @@ public class InfuseLoader implements DedicatedServerModInitializer, Infuse {
     @Override
     public Path dataFile() {
         return Path.of("data", "infuse.yml");
-    }
-
-    @Override
-    public MainConfig config() {
-        return config;
-    }
-
-    @Override
-    public DataManager dataManager() {
-        return dataManager;
     }
 
     @Override

@@ -25,7 +25,7 @@ import java.util.UUID;
 @NullMarked
 public class DataManager extends MutableConfig {
     public DataManager() {
-        super(InfuseProvider.get().dataFile());
+        super(Infuse.getInstance().dataFile());
     }
 
     public int getScore(Player player) {

@@ -19,10 +19,9 @@ import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.TooltipDisplay;
 import org.turbojax.infusev1.Infuse;
-import org.turbojax.infusev1.InfuseProvider;
 
 public class Enhancer implements CustomItem {
-    private final Infuse infuse = InfuseProvider.get();
+    private final Infuse infuse = Infuse.getInstance();
 
     @Override
     public String key() {

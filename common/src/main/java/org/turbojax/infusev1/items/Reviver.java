@@ -12,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.component.ItemLore;
-import org.turbojax.infusev1.InfuseProvider;
+import org.turbojax.infusev1.Infuse;
 import org.turbojax.infusev1.inventories.ReviverMenuProvider;
 
 import java.util.List;
@@ -59,7 +59,7 @@ public class Reviver implements CustomItem {
     @Override
     public InteractionResult interact(Player player, ItemStack item) {
         // Skipping if no players have been banned
-        if (InfuseProvider.get().dataManager().getBanned().isEmpty()) {
+        if (Infuse.getInstance().dataManager().getBanned().isEmpty()) {
             player.sendSystemMessage(Component.literal("No players have been banned yet."));
             return InteractionResult.FAIL;
         }

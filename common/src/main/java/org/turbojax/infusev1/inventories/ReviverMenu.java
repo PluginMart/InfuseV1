@@ -22,7 +22,6 @@ import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ResolvableProfile;
 import org.jspecify.annotations.NonNull;
 import org.turbojax.infusev1.Infuse;
-import org.turbojax.infusev1.InfuseProvider;
 import org.turbojax.infusev1.items.Reviver;
 
 import java.util.List;
@@ -32,7 +31,7 @@ public class ReviverMenu extends ChestMenu {
     private static final Identifier DEST_KEY = Identifier.fromNamespaceAndPath("infusev1", "dest");
     private static final int headsPerPage = 7;
 
-    private final Infuse infuse = InfuseProvider.get();
+    private final Infuse infuse = Infuse.getInstance();
     private final Container container;
     private final int page;
 

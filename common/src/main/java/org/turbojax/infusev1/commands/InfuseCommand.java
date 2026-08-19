@@ -16,7 +16,6 @@ import net.minecraft.server.players.NameAndId;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 import org.turbojax.infusev1.Infuse;
-import org.turbojax.infusev1.InfuseProvider;
 import org.turbojax.infusev1.MainConfig;
 import org.turbojax.infusev1.items.CustomItem;
 
@@ -26,10 +25,10 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 public class InfuseCommand {
-    private final Infuse infuse = InfuseProvider.get();
+    private final Infuse infuse = Infuse.getInstance();
     
     public static LiteralCommandNode<CommandSourceStack> build(String alias) {
-        MainConfig config = InfuseProvider.get().config();
+        MainConfig config = Infuse.getInstance().config();
         InfuseCommand cmd = new InfuseCommand();
 
         return Commands.literal(alias)

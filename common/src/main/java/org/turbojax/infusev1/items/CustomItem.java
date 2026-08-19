@@ -17,7 +17,7 @@ import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import org.jspecify.annotations.Nullable;
-import org.turbojax.infusev1.InfuseProvider;
+import org.turbojax.infusev1.Infuse;
 import org.turbojax.infusev1.MainConfig;
 
 public interface CustomItem {
@@ -56,7 +56,7 @@ public interface CustomItem {
     }
 
     default CraftingRecipe getRecipe() {
-        MainConfig config = InfuseProvider.get().config();
+        MainConfig config = Infuse.getInstance().config();
 
         return config.getRecipe(this);
     }

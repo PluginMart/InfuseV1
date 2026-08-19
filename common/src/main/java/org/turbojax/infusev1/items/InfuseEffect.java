@@ -14,7 +14,7 @@ import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.TooltipDisplay;
 import org.turbojax.infusev1.DataManager;
-import org.turbojax.infusev1.InfuseProvider;
+import org.turbojax.infusev1.Infuse;
 import org.turbojax.infusev1.MainConfig;
 
 import java.util.List;
@@ -62,8 +62,8 @@ public class InfuseEffect implements CustomItem {
 
     @Override
     public ItemStack consume(Player player, ItemStack item) {
-        DataManager dataManager = InfuseProvider.get().dataManager();
-        MainConfig config = InfuseProvider.get().config();
+        DataManager dataManager = Infuse.getInstance().dataManager();
+        MainConfig config = Infuse.getInstance().config();
 
         int pScore = dataManager.getScore(player);
 

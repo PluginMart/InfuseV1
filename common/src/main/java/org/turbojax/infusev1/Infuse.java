@@ -4,23 +4,52 @@ import java.nio.file.Path;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import org.jspecify.annotations.NonNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public interface Infuse {
-    Logger LOGGER = LoggerFactory.getLogger("InfuseV1");
+public abstract class Infuse {
+    public static final Logger LOGGER = LoggerFactory.getLogger("InfuseV1");
+    private static Infuse instance;
 
-    MinecraftServer server();
+    protected final MainConfig config;
+    protected final DataManager dataManager;
 
-    Path configFile();
-    Path dataFile();
+    protected Infuse() {
+        if (instance != null) throw new IllegalStateException("Cannot load infuse twice");
 
-    MainConfig config();
-    DataManager dataManager();
+        instance = this;
 
-    void onDeath(ServerPlayer player);
+        config = new MainConfig();
+        dataManager = new DataManager();
+    }
 
-    void postRespawn(ServerPlayer player);
 
-    void onJoin(ServerPlayer player);
+    @NonNull
+    public static Infuse getInstance() {
+        if (instance == null) throw new IllegalStateException("Could not retrieve infuse instance.  It hasn't been initialized.");
+
+        return instance;
+    }
+
+    public abstract MinecraftServer server();
+
+    public abstract Path configFile();
+    public abstract Path dataFile();
+
+    public MainConfig config() {
+        return config;
+    }
+
+    public DataManager dataManager() {
+        return dataManager;
+    }
+
+    public abstract void onDeath(ServerPlayer player);
+
+    public abstract void postRespawn(ServerPlayer player);
+
+    public abstract void onJoin(ServerPlayer player);
+
+
 }
