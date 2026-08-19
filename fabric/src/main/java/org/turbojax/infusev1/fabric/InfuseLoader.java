@@ -1,5 +1,6 @@
 package org.turbojax.infusev1.fabric;
 
+import com.mojang.authlib.GameProfile;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
@@ -8,17 +9,19 @@ import net.fabricmc.fabric.api.event.player.ItemEvents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.server.players.NameAndId;
+import net.minecraft.server.players.UserBanList;
+import net.minecraft.server.players.UserBanListEntry;
 import net.minecraft.world.item.ItemStack;
 import org.turbojax.infusev1.Infuse;
 import org.turbojax.infusev1.commands.InfuseCommand;
 import org.turbojax.infusev1.items.CustomItem;
 
 import java.nio.file.Path;
+import java.util.Optional;
 
 public class InfuseLoader extends Infuse implements DedicatedServerModInitializer {
-    public static MinecraftServer server;
+    public MinecraftServer server;
 
     @Override
     public void onInitializeServer() {
@@ -28,16 +31,14 @@ public class InfuseLoader extends Infuse implements DedicatedServerModInitialize
 
         // Snagging an instance of the server
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
-            InfuseLoader.server = server;
+            this.server = server;
 
             // Registering the command
             server.getCommands().getDispatcher().getRoot().addChild(InfuseCommand.build("infuse"));
         });
 
         // Saving configs when the server stops
-        ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
-            dataManager.save();
-        });
+        ServerLifecycleEvents.SERVER_STOPPING.register(server -> dataManager.save());
 
         // Passing join events through onJoin
         ServerPlayerEvents.JOIN.register(this::onJoin);
@@ -66,11 +67,6 @@ public class InfuseLoader extends Infuse implements DedicatedServerModInitialize
     }
 
     @Override
-    public MinecraftServer server() {
-        return server;
-    }
-
-    @Override
     public Path configFile() {
         return Path.of("config", "infuse.yml");
     }
@@ -81,63 +77,31 @@ public class InfuseLoader extends Infuse implements DedicatedServerModInitialize
     }
 
     @Override
-    public void onDeath(ServerPlayer dead) {
-        int deadScore = dataManager.getScore(dead);
-
-        Player killer = dead.getLastHurtByPlayer();
-        if (killer == null) return;
-        if (killer != dead.getKillCredit()) return;
-
-        int killerScore = dataManager.getScore(killer);
-
-        if (deadScore - 1 >= config.minScore()) {
-            // Updating the player's score
-            dataManager.setScore(dead, deadScore - 1);
-
-            // Banning the player if necessary
-            int banScore = config.banScore();
-            if (banScore < 0 && deadScore - 1 == banScore) {
-                dataManager.ban(dead.nameAndId());
-                dead.connection.disconnect(Component.translatable("multiplayer.disconnect.banned"));
-            }
-
-            if (deadScore > 0 && deadScore <= config.maxPositive()) {
-                // Removing a random positive effect
-                dataManager.removeRandomEffect(dead);
-            } else if (deadScore <= 0 && deadScore > -config.maxNegative()) {
-                // Giving a random negative effect
-                dataManager.addRandomEffect(dead, false);
-            }
-        }
-
-        if (killerScore + 1 <= config.maxScore()) {
-            // Updating the player's score
-            dataManager.setScore(killer, killerScore + 1);
-
-            if (killerScore < 0 && killerScore >= -config.maxNegative()) {
-                // Removing a random negative effect
-                dataManager.removeRandomEffect(killer);
-            } else if (killerScore >= 0 && killerScore < config.maxPositive()) {
-                // Giving a random positive effect
-                dataManager.addRandomEffect(killer, true);
-            }
-        }
+    public NameAndId getPlayer(String name) {
+        return server.services().nameToIdCache().get(name).orElse(null);
     }
 
     @Override
-    public void onJoin(ServerPlayer player) {
-        // Resetting the player's effects as necessary
-        if (dataManager.needsReset(player)) {
-            dataManager.resetEffects(player);
-        }
+    public GameProfile getProfile(NameAndId player) {
+        GameProfile defaultProfile = new GameProfile(player.id(), player.name());
+        Optional<GameProfile> profile = server.services().profileResolver().fetchById(player.id());
 
-        // Registering the recipes?
-        // TODO: Fix recipes
+        return profile.orElse(defaultProfile);
     }
 
     @Override
-    public void postRespawn(ServerPlayer player) {
-        // Re-applying the player's effects
-        dataManager.getEffects(player).forEach(e -> player.addEffect(new MobEffectInstance(e, -1, config.getEffectiveAmplifier(e))));
+    public void banPlayer(NameAndId player) {
+        UserBanList bans = server.getPlayerList().getBans();
+        bans.add(new UserBanListEntry(player, null, null, null, "Ran out of lives!"));
+
+        ServerPlayer serverPlayer = server.getPlayerList().getPlayer(player.id());
+        if (serverPlayer == null) return;
+        serverPlayer.connection.disconnect(Component.translatable("multiplayer.disconnect.banned"));
+    }
+
+    @Override
+    public void unbanPlayer(NameAndId player) {
+        UserBanList bans = server.getPlayerList().getBans();
+        bans.remove(player);
     }
 }

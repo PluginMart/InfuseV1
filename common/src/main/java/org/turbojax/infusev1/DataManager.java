@@ -1,8 +1,6 @@
 package org.turbojax.infusev1;
 
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.players.UserBanList;
-import net.minecraft.server.players.UserBanListEntry;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.Unmodifiable;
@@ -190,8 +188,7 @@ public class DataManager extends MutableConfig {
 
         if (banned.contains(player)) return;
 
-        UserBanList bans = plugin.server().getPlayerList().getBans();
-        bans.add(new UserBanListEntry(player, null, null, null, "Ran out of lives!"));
+        plugin.banPlayer(player);
 
         banned.add(player);
         setBanned(banned);
@@ -205,8 +202,7 @@ public class DataManager extends MutableConfig {
         banned.remove(player);
         setBanned(banned);
 
-        UserBanList bans = plugin.server().getPlayerList().getBans();
-        bans.remove(player);
+        plugin.unbanPlayer(player);
 
         setScore(player.id(), plugin.config().reviveScore());
 

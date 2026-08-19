@@ -21,7 +21,6 @@ import org.turbojax.infusev1.items.CustomItem;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 public class InfuseCommand {
@@ -98,7 +97,7 @@ public class InfuseCommand {
     }
 
     public int reload(CommandContext<CommandSourceStack> ctx) {
-        InfuseProvider.get().config().load();
+        Infuse.getInstance().config().load();
         // TODO: Reload recipes
         ctx.getSource().sendSystemMessage(Component.literal("Reloaded the config.").withColor(TextColor.GREEN));
 
@@ -106,16 +105,10 @@ public class InfuseCommand {
     }
 
     public int revive(CommandContext<CommandSourceStack> ctx, String name) {
-        Optional<NameAndId> result = infuse.server().services().nameToIdCache().get(name);
-        if (result.isEmpty()) {
-            ctx.getSource().sendSystemMessage(Component.literal("Player \"" + name + "\" is not banned"));
+        NameAndId player = infuse.getPlayer(name);
+        if (player == null || !infuse.dataManager().getBanned().contains(player)) {
+            ctx.getSource().sendSystemMessage(Component.literal("Player \"" + name + "\" is not banned").withColor(TextColor.RED));
             return 1;
-        }
-
-        NameAndId player = result.get();
-
-        if (!infuse.dataManager().getBanned().contains(player)) {
-            ctx.getSource().sendSystemMessage(Component.literal(player.name() + " isn't banned.").withColor(TextColor.RED));
         }
 
         infuse.dataManager().unban(player);

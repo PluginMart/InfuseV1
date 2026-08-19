@@ -25,7 +25,6 @@ import org.turbojax.infusev1.Infuse;
 import org.turbojax.infusev1.items.Reviver;
 
 import java.util.List;
-import java.util.Optional;
 
 public class ReviverMenu extends ChestMenu {
     private static final Identifier DEST_KEY = Identifier.fromNamespaceAndPath("infusev1", "dest");
@@ -65,10 +64,9 @@ public class ReviverMenu extends ChestMenu {
     public ItemStack createHead(NameAndId player) {
         ItemStack skull = new ItemStack(Items.PLAYER_HEAD);
 
-        GameProfile defaultProfile = new GameProfile(player.id(), player.name());
-        Optional<GameProfile> profile = infuse.server().services().profileResolver().fetchById(player.id());
+        GameProfile profile = infuse.getProfile(player);
 
-        skull.set(DataComponents.PROFILE, ResolvableProfile.createResolved(profile.orElse(defaultProfile)));
+        skull.set(DataComponents.PROFILE, ResolvableProfile.createResolved(profile));
         skull.set(DataComponents.CUSTOM_NAME, Component.literal(player.name()).withStyle(Style.EMPTY.withColor(TextColor.YELLOW).withItalic(false)));
 
         return skull;
