@@ -84,6 +84,8 @@ public class InfuseCommand {
     }
 
     public int help(CommandSourceStack ctx) {
+        if (infuse.hasPermission(ctx, "infusev1.commands.infuse.help")) return 1;
+        
         ctx.sendSystemMessage(Component.literal("/infuse").withColor(TextColor.AQUA));
         ctx.sendSystemMessage(Component.literal(" |- help").withColor(TextColor.AQUA).append(Component.literal(": Shows the help message").withColor(TextColor.WHITE)));
         ctx.sendSystemMessage(Component.literal(" |- reload").withColor(TextColor.AQUA).append(Component.literal(": Reloads the config").withColor(TextColor.WHITE)));

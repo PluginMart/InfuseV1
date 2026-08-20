@@ -3,6 +3,7 @@ package org.turbojax.infusev1;
 import java.nio.file.Path;
 
 import com.mojang.authlib.GameProfile;
+import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.NameAndId;
@@ -155,4 +156,10 @@ public abstract class Infuse {
      * @param player The player to unban.
      */
     public abstract void unbanPlayer(NameAndId player);
+
+    /**
+     * Checks if the {@link CommandSourceStack} has the specified permission
+     * @param source The related CommandSourceStack.
+     */
+    public abstract boolean hasPermission(CommandSourceStack source, String permission);
 }
