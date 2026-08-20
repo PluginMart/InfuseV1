@@ -4,6 +4,7 @@ import com.destroystokyo.paper.profile.CraftPlayerProfile;
 import com.mojang.authlib.GameProfile;
 import io.papermc.paper.ban.BanListType;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.server.permissions.Permission;
 import net.minecraft.server.players.NameAndId;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.CraftOfflinePlayer;
@@ -61,7 +62,7 @@ public class InfusePaper extends Infuse {
     }
 
     @Override
-    public boolean hasPermission(CommandSourceStack source, String permission) {
-        return source.getBukkitSender().hasPermission(permission);
+    public boolean hasPermission(CommandSourceStack source, String permission, Permission fallbackPermission) {
+        return source.hasPermission(fallbackPermission, permission);
     }
 }

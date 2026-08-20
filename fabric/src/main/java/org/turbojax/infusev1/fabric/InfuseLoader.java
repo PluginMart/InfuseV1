@@ -6,7 +6,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.permissions.Permissions;
+import net.minecraft.server.permissions.Permission;
 import net.minecraft.server.players.NameAndId;
 import net.minecraft.server.players.UserBanList;
 import net.minecraft.server.players.UserBanListEntry;
@@ -64,7 +64,10 @@ public class InfuseLoader extends Infuse implements DedicatedServerModInitialize
         bans.remove(player);
     }
 
-    public boolean hasPermission(CommandSourceStack source, String permission) {
-        return source.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER);
+
+    public boolean hasPermission(CommandSourceStack source, String permission, Permission fallbackPermission) {
+        // TODO: Check luckperms
+
+        return source.permissions().hasPermission(fallbackPermission);
     }
 }
