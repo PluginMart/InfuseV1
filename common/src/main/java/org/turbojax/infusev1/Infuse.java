@@ -6,6 +6,8 @@ import com.mojang.authlib.GameProfile;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.Permission;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.server.players.NameAndId;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
@@ -158,8 +160,19 @@ public abstract class Infuse {
     public abstract void unbanPlayer(NameAndId player);
 
     /**
-     * Checks if the {@link CommandSourceStack} has the specified permission
+     * Checks if the {@link CommandSourceStack} has the specified permission.
+     * If the permission is not found, it checks if the source is an admin.
+     *
      * @param source The related CommandSourceStack.
      */
-    public abstract boolean hasPermission(CommandSourceStack source, String permission);
+    public boolean hasPermission(CommandSourceStack source, String permission) {
+        return hasPermission(source, permission, Permissions.COMMANDS_ADMIN);
+    }
+
+    /**
+     * Checks if the {@link CommandSourceStack} has the specified permission
+     * @param source The related CommandSourceStack.
+     * @param fallbackPermission The fallback permission to check for if the string permission is not found.
+     */
+    public abstract boolean hasPermission(CommandSourceStack source, String permission, Permission fallbackPermission);
 }
