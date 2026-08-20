@@ -1,6 +1,4 @@
 pluginManagement {
-    includeBuild("build-logic")
-
     repositories {
         mavenCentral()
         maven("https://maven.fabricmc.net/")

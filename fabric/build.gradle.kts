@@ -1,8 +1,10 @@
 plugins {
-    id("my-conventions")
+    alias(libs.plugins.fabric.loom)
 }
 
 dependencies {
+    minecraft(libs.minecraft)
+
     implementation(libs.fabric.loader)
     implementation(project(":common"))
 
@@ -15,10 +17,32 @@ dependencies {
     include(libs.option)
 }
 
+loom {
+    splitEnvironmentSourceSets()
+
+    mods {
+        register("infusev1") {
+            sourceSet(sourceSets.main.get())
+            sourceSet(sourceSets.getByName("client"))
+        }
+    }
+}
+
 tasks.processResources {
     inputs.property("version", version)
 
     filesMatching("fabric.mod.json") {
         expand("version" to version)
     }
+}
+
+tasks.withType<JavaCompile>().configureEach {
+    options.release = 25
+}
+
+java {
+    withSourcesJar()
+
+    sourceCompatibility = JavaVersion.VERSION_25
+    targetCompatibility = JavaVersion.VERSION_25
 }
