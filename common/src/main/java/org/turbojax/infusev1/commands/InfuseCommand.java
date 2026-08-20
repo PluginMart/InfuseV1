@@ -10,6 +10,8 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.Permission;
+import net.minecraft.server.permissions.PermissionLevel;
 import net.minecraft.server.players.NameAndId;
 
 import net.minecraft.world.item.ItemStack;
@@ -26,6 +28,7 @@ public class InfuseCommand {
     private final Infuse infuse = Infuse.getInstance();
     
     public static LiteralCommandNode<CommandSourceStack> build(String alias) {
+        Infuse infuse = Infuse.getInstance();
         MainConfig config = Infuse.getInstance().config();
         InfuseCommand cmd = new InfuseCommand();
 
@@ -52,7 +55,7 @@ public class InfuseCommand {
             .then(Commands.literal("getscore")
                 .executes(c -> cmd.getScore(c.getSource(), null))
                 .then(Commands.argument("player", EntityArgument.players())
-                        .executes(c -> cmd.getScore(c.getSource(), EntityArgument.getPlayers(c, "player")))
+                    .executes(c -> cmd.getScore(c.getSource(), EntityArgument.getPlayers(c, "player")))
                 )
             )
             .then(Commands.literal("setscore")
@@ -84,8 +87,8 @@ public class InfuseCommand {
     }
 
     public int help(CommandSourceStack ctx) {
-        if (infuse.hasPermission(ctx, "infusev1.commands.infuse.help")) return 1;
-        
+        if (!infuse.hasPermission(ctx, "infusev1.help", new Permission.HasCommandLevel(PermissionLevel.ALL))) return 1;
+
         ctx.sendSystemMessage(Component.literal("/infuse").withColor(TextColor.AQUA));
         ctx.sendSystemMessage(Component.literal(" |- help").withColor(TextColor.AQUA).append(Component.literal(": Shows the help message").withColor(TextColor.WHITE)));
         ctx.sendSystemMessage(Component.literal(" |- reload").withColor(TextColor.AQUA).append(Component.literal(": Reloads the config").withColor(TextColor.WHITE)));
@@ -98,6 +101,8 @@ public class InfuseCommand {
     }
 
     public int reload(CommandSourceStack ctx) {
+        if (!infuse.hasPermission(ctx, "infusev1.reload")) return 1;
+
         Infuse.getInstance().config().load();
         // TODO: Reload recipes
         ctx.sendSystemMessage(Component.literal("Reloaded the config.").withColor(TextColor.GREEN));
@@ -106,6 +111,8 @@ public class InfuseCommand {
     }
 
     public int revive(CommandSourceStack ctx, String name) {
+        if (!infuse.hasPermission(ctx, "infusev1.revive")) return 1;
+
         NameAndId player = infuse.getPlayer(name);
         if (player == null || !infuse.dataManager().getBanned().contains(player)) {
             ctx.sendSystemMessage(Component.literal("Player \"" + name + "\" is not banned").withColor(TextColor.RED));
@@ -113,20 +120,25 @@ public class InfuseCommand {
         }
 
         infuse.dataManager().unban(player);
-        ctx.sendSystemMessage(Component.literal("Revived " + player.name() + "!").withColor(TextColor.GREEN));
+        ctx.sendSystemMessage(Component.literal("Revived " + name + "!").withColor(TextColor.GREEN));
 
         return 1;
     }
     
     public int getScore(CommandSourceStack ctx, @Nullable Collection<ServerPlayer> targets) {
         if (targets == null) {
+            if (!infuse.hasPermission(ctx, "infusev1.getscore", new Permission.HasCommandLevel(PermissionLevel.ALL))) return 1;
+
             if (ctx.isPlayer()) {
                 targets = List.of(ctx.getPlayer());
             } else {
                 ctx.sendSystemMessage(Component.literal("You must specify a target.").withColor(TextColor.RED));
                 return 1;
             }
+        } else {
+            if (!infuse.hasPermission(ctx, "infusev1.getscore.other")) return 1;
         }
+
 
         targets.forEach(p -> ctx.sendSystemMessage(Component.literal(p.getPlainTextName() + "'s score is " + infuse.dataManager().getScore(p))));
 
@@ -134,6 +146,7 @@ public class InfuseCommand {
     }
     
     public int setScore(CommandSourceStack ctx, Collection<ServerPlayer> targets, int score) {
+        if (!infuse.hasPermission(ctx, "infusev1.setscore")) return 1;
         for (ServerPlayer player : targets) {
             infuse.dataManager().setScore(player, score);
             infuse.dataManager().resetEffects(player);
@@ -153,6 +166,7 @@ public class InfuseCommand {
     }
 
     public int give(CommandSourceStack ctx, Collection<ServerPlayer> targets, String itemKey, int count) {
+        if (!infuse.hasPermission(ctx, "infusev1.give")) return 1;
         for (ServerPlayer player : targets) {
             CustomItem item = CustomItem.fromKey(itemKey);
             if (item == null) {
