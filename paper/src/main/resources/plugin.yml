@@ -1,0 +1,24 @@
+name: InfuseV1
+version: '$version'
+main: org.turbojax.infusev1.paper.Main
+api-version: '26.2'
+authors: [TurboJax]
+commands:
+  infuse:
+    description: Base command for Infuse
+    usage: /infuse help
+permissions:
+  infusev1.help:
+    description: "Lets players use `/infuse help`"
+  infusev1.reload:
+    description: "Lets players use `/infuse reload`"
+  infusev1.revive:
+    description: "Lets players use `/infuse revive`"
+  infusev1.getscore:
+    description: "Lets players use `/infuse getscore`"
+  infusev1.getscore.other:
+    description: "Lets players use `/infuse getscore <player>`"
+  infusev1.setscore:
+    description: "Lets players use `/infuse setscore`"
+  infusev1.give:
+    description: "Lets players use `/infuse give`"
