@@ -28,15 +28,15 @@ public abstract class RecipeManagerMixin implements MutableRecipeManager {
 
     @Override
     @Unique
-    public void addRecipe(RecipeHolder<?> recipe) {
-        ((MutableRecipeMap)recipes).addRecipe(recipe);
+    public void infusev1$addRecipe(RecipeHolder<?> recipe) {
+        ((MutableRecipeMap)recipes).infusev1$addRecipe(recipe);
         finalizeRecipeLoading(enabledFlags);
     }
 
     @Override
     @Unique
-    public boolean removeRecipe(ResourceKey<Recipe<?>> key) {
-        boolean removed = ((MutableRecipeMap)recipes).removeRecipe(key);
+    public boolean infusev1$addRecipe(ResourceKey<Recipe<?>> key) {
+        boolean removed = ((MutableRecipeMap)recipes).infusev1$removeRecipe(key);
         if (removed) {
             this.finalizeRecipeLoading();
         }

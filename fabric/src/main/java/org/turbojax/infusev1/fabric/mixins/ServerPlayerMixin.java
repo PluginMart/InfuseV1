@@ -30,7 +30,7 @@ public abstract class ServerPlayerMixin extends PlayerMixin {
     }
 
     @Inject(method="hurtServer", at=@At("TAIL"))
-    public void infusev1_onDeath(ServerLevel level, DamageSource source, float damage, CallbackInfoReturnable<Boolean> cir) {
+    public void infusev1$onDeath(ServerLevel level, DamageSource source, float damage, CallbackInfoReturnable<Boolean> cir) {
         Infuse.getInstance().onDeath(self());
     }
 

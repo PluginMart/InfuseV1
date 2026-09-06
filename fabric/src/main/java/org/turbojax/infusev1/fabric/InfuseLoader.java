@@ -50,10 +50,10 @@ public class InfuseLoader extends Infuse implements DedicatedServerModInitialize
             if (recipe == null) return;
 
             ResourceKey<Recipe<?>> recipeKey = ResourceKey.create(Registries.RECIPE, item.id());
-            ((MutableRecipeManager) server.getRecipeManager()).addRecipe(new RecipeHolder<>(recipeKey, recipe));
+            ((MutableRecipeManager) server.getRecipeManager()).infusev1$addRecipe(new RecipeHolder<>(recipeKey, recipe));
         });
 
-        ((ReloadableResources) server.getPlayerList()).reloadRecipes();
+        ((ReloadableResources) server.getPlayerList()).infusev1$reloadRecipes();
     }
 
     @Override

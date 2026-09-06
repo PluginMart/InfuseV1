@@ -5,6 +5,6 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 public interface MutableRecipeManager {
-    void addRecipe(RecipeHolder<?> recipe);
-    boolean removeRecipe(ResourceKey<Recipe<?>> key);
+    void infusev1$addRecipe(RecipeHolder<?> recipe);
+    boolean infusev1$addRecipe(ResourceKey<Recipe<?>> key);
 }

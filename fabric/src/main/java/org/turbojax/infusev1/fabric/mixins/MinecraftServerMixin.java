@@ -17,7 +17,7 @@ public abstract class MinecraftServerMixin {
     public abstract Commands getCommands();
 
     @Inject(method="runServer", at= @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;initServer()Z"))
-    private void infusev1_snagInstance(CallbackInfo ci) {
+    private void infusev1$snagInstance(CallbackInfo ci) {
         // Getting the plugin an instance of the server
         InfuseLoader inst = (InfuseLoader) InfuseLoader.getInstance();
         inst.server = (MinecraftServer) (Object) this;
@@ -27,7 +27,7 @@ public abstract class MinecraftServerMixin {
     }
 
     @Inject(method="stopServer", at=@At("HEAD"))
-    private void infusev1_saveData(CallbackInfo ci) {
+    private void infusev1$saveData(CallbackInfo ci) {
         Infuse.getInstance().dataManager().save(false);
     }
 }

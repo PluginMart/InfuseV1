@@ -27,7 +27,7 @@ public abstract class RecipeMapMixin implements MutableRecipeMap {
 
     @Override
     @Unique
-    public void addRecipe(RecipeHolder<?> recipe) {
+    public void infusev1$addRecipe(RecipeHolder<?> recipe) {
         Collection<RecipeHolder<?>> recipes = byType.get(recipe.value().getType());
 
         if (byKey.containsKey(recipe.id())) {
@@ -40,7 +40,7 @@ public abstract class RecipeMapMixin implements MutableRecipeMap {
 
     @Override
     @Unique
-    public boolean removeRecipe(ResourceKey<Recipe<?>> key) {
+    public boolean infusev1$removeRecipe(ResourceKey<Recipe<?>> key) {
         RecipeHolder<?> removed = byKey.remove(key);
         if (removed == null) return false;
         byType.get(removed.value().getType()).remove(removed);
