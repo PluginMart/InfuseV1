@@ -1,10 +1,13 @@
 package org.turbojax.infusev1.items;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -13,14 +16,22 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.TooltipDisplay;
+import org.jspecify.annotations.Nullable;
 import org.turbojax.infusev1.DataManager;
 import org.turbojax.infusev1.Infuse;
-import org.turbojax.infusev1.MainConfig;
 
 import java.util.List;
 import java.util.Optional;
 
-public class InfuseEffect implements CustomItem {
+public class InfuseEffect extends CustomItem {
+    private final Holder.Reference<MobEffect> effect;
+    private final ServerPlayer owner;
+
+    public InfuseEffect(Holder.Reference<MobEffect> effect, ServerPlayer owner) {
+        this.effect = effect;
+        this.owner = owner;
+    }
+
     @Override
     public String key() {
         return "infuse_effect";
@@ -28,12 +39,9 @@ public class InfuseEffect implements CustomItem {
 
     @Override
     public Component itemName() {
-        Style style = Style.EMPTY
-                .withColor(TextColor.GOLD)
-                .withBold(true)
-                .withItalic(false);
-
-        return Component.literal("Infuse Effect").setStyle(style);
+        String effectName = effect.key().identifier().toShortString();
+        effectName = effectName.substring(0, 1).toUpperCase() + effectName.substring(1);
+        return Component.literal(effectName);
     }
 
     @Override
@@ -43,28 +51,35 @@ public class InfuseEffect implements CustomItem {
 
     @Override
     public ItemLore itemLore() {
-        Style style = Style.EMPTY
-                .withColor(TextColor.WHITE)
-                .withItalic(false);
-
-        return new ItemLore(List.of(Component.literal("Drink to gain an effect.").setStyle(style)));
+        return new ItemLore(List.of(Component.literal("Extracted from " + owner.getPlainTextName())));
     }
 
     @Override
     public ItemStackTemplate createTemplate() {
-        DataComponentPatch.Builder patch = startPatches();
+        DataComponentPatch.Builder patch = DataComponentPatch.builder();
+
+        patch.set(DataComponents.CUSTOM_DATA, customData());
+        patch.set(DataComponents.CUSTOM_NAME, itemName());
+        patch.set(DataComponents.LORE, itemLore());
         patch.set(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay.DEFAULT.withHidden(DataComponents.POTION_CONTENTS, true));
-        patch.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.empty(), Optional.of(0xD2B48C), List.of(), Optional.empty()));
+        patch.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.empty(), Optional.of(effect.value().getColor()), List.of(new MobEffectInstance(effect)), Optional.empty()));
         patch.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
 
         return new ItemStackTemplate(itemType(), patch.build());
     }
 
-    @Override
-    public ItemStack consume(Player player, ItemStack item) {
-        DataManager dataManager = Infuse.getInstance().dataManager();
-        MainConfig config = Infuse.getInstance().config();
+    public Holder.@Nullable Reference<MobEffect> getEffect(ItemStack item) {
+        if (isItem(item)) return null;
 
+        PotionContents contents = item.get(DataComponents.POTION_CONTENTS);
+        if (contents == null) return null;
+
+        return (Holder.Reference<MobEffect>) contents.customEffects().getFirst().getEffect();
+    }
+
+    @Override
+    public void onConsume(Player player, ItemStack item) {
+        DataManager dataManager = Infuse.getInstance().dataManager();
         int pScore = dataManager.getScore(player);
 
         // Removing a random negative effect from the player if they have any.
@@ -74,22 +89,31 @@ public class InfuseEffect implements CustomItem {
 
             item.shrink(1);
 
-            return item;
+            return;
         }
 
-        // Making sure the player doesn't have the max number of positive effects
-        // maybe replace with a "score" attribute that is the number of effects the player has
-        if (pScore >= config.maxPositive()) {
-            player.sendSystemMessage(Component.literal("You already have the maximum number of positive effects"));
-            return item;
+        // Getting the effect to give to the player
+        Holder.Reference<MobEffect> effect = getEffect(item);
+        if (effect == null) {
+            Infuse.LOGGER.error("Failed to get an effect from an Infuse Effect!");
+            Infuse.LOGGER.error("Holder: {}", player.getPlainTextName());
+
+            player.sendSystemMessage(Component.literal("Something went wrong while parsing the effect.  Contact an administrator").withColor(TextColor.RED));
+            return;
         }
 
-        // Adding a random positive effect
+        // If the player already has the effect, don't let them drink it.
+        if (dataManager.hasEffect(player, effect)) {
+            player.sendSystemMessage(Component.literal("You already have this effect!").withColor(TextColor.RED));
+            return;
+        }
+
+        // Increasing the player's score
         dataManager.setScore(player, pScore + 1);
-        dataManager.addRandomEffect(player, true);
+
+        // Giving the player the effect
+        dataManager.addEffect(player, effect);
 
         item.shrink(1);
-
-        return item;
     }
 }

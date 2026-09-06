@@ -1,14 +1,14 @@
 package org.turbojax.infusev1.items;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
-import com.google.gson.JsonElement;
-import com.mojang.serialization.JsonOps;
-import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -20,103 +20,148 @@ import org.jspecify.annotations.Nullable;
 import org.turbojax.infusev1.Infuse;
 import org.turbojax.infusev1.MainConfig;
 
-public interface CustomItem {
-    String key();
+public abstract class CustomItem {
+    public static final String ITEM_KEY = "infusev1:item_key";
+    private static final Map<String,CustomItem> REGISTERED = new HashMap<>();
 
-    Component itemName();
-
-    Item itemType();
-
-    ItemLore itemLore();
-
-    default boolean isItem(ItemStack item) {
-        if (!item.is(itemType())) return false;
-
-        CustomData data = item.get(DataComponents.CUSTOM_DATA);
-        if (data == null) return false;
-
-        Optional<String> key = data.copyTag().getString("infuse:item_key");
-        return key.map(key().toString()::equals).orElse(false);
-    }
-
-    default DataComponentPatch.Builder startPatches() {
-        CompoundTag tag = new CompoundTag();
-        tag.putString("infuse:item_key", key());
-
-        return DataComponentPatch.builder()
-                .set(DataComponents.CUSTOM_NAME, itemName())
-                .set(DataComponents.LORE, itemLore())
-                .set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
-    }
-
-    ItemStackTemplate createTemplate();
-
-    default ItemStack createItem() {
-        return createTemplate().withCount(1).create();
-    }
-
-    default CraftingRecipe getRecipe() {
-        MainConfig config = Infuse.getInstance().config();
-
-        return config.getRecipe(this);
-    }
-
-    default JsonElement asJson() {
-        return ItemStack.CODEC.encodeStart(JsonOps.INSTANCE, createItem()).getOrThrow();
+    /**
+     * Registers a custom item.
+     * @param item The custom item to register.
+     */
+    public static void register(CustomItem item) {
+        REGISTERED.put(item.key(), item);
     }
 
     /**
-     * Defines what should happen when a player interacts with the item.
-     *
-     * @param player The {@link Player} who interacted with the item.
-     * @param item The {@link ItemStack} the player interacted with.
+     * Unregisters a custom item.
+     * @param item The custom item to unregister.
      */
-    @Nullable
-    default InteractionResult interact(Player player, ItemStack item) {
-        return null;
+    public static void unregister(CustomItem item) {
+        REGISTERED.remove(item.key());
     }
 
     /**
-     * Defines what should happen when a player consumes the item.
+     * Gets a custom item by its key.
      *
-     * @param player The {@link Player} who consumed the item.
-     * @param item The {@link ItemStack} the player consumed.
+     * @param key The key of the custom item.
+     * @return The custom item, or null if not found.
      */
-    default ItemStack consume(Player player, ItemStack item) {
-        return item;
-    }
-
     @Nullable
-    static CustomItem fromKey(String key) {
-        if (key.equalsIgnoreCase("enhancer")) return new Enhancer();
-        if (key.equalsIgnoreCase("infuse_effect")) return new InfuseEffect();
-        if (key.equalsIgnoreCase("reviver")) return new Reviver();
-
-        return null;
+    public static CustomItem fromKey(String key) {
+        return REGISTERED.get(key);
     }
 
-    static boolean isCustomItem(ItemStack item) {
+    /**
+     * Checks if an {@link ItemStack} is a custom item.
+     *
+     * @param item The {@link ItemStack} to check.
+     * @return True if the item is a registered custom item, false otherwise.
+     */
+    public static boolean isCustomItem(ItemStack item) {
         CustomData data = item.get(DataComponents.CUSTOM_DATA);
         if (data == null) return false;
 
-        return data.copyTag().contains("infuse:item_key");
+        Tag t = data.copyTag().remove(ITEM_KEY);
+        if (t == null) return false;
+
+        Optional<String> key = t.asString();
+        return key.filter(REGISTERED::containsKey).isPresent();
     }
 
+    /**
+     * Parses a custom item's key from an {@link ItemStack}.
+     *
+     * @param item The {@link ItemStack} to parse.
+     * @return The key of the custom item, or null if the item is not a custom item or does not have a key.
+     */
     @Nullable
-    static String getKey(ItemStack item) {
+    public static String getKey(ItemStack item) {
         if (!isCustomItem(item)) return null;
 
         CustomData data = item.get(DataComponents.CUSTOM_DATA);
-        Optional<String> key = data.copyTag().getString("infuse:item_key");
+        Optional<String> key = data.copyTag().getString(ITEM_KEY);
 
         return key.orElse(null);
     }
 
+    /**
+     * Attempts to convert an {@link ItemStack} to a {@link CustomItem}.
+     *
+     * @param item The {@link ItemStack} to convert.
+     * @return The {@link CustomItem} if the item represents a registered custom item, null otherwise.
+     */
     @Nullable
-    static CustomItem fromItemStack(ItemStack item) {
+    public static CustomItem fromItemStack(ItemStack item) {
         String key = getKey(item);
         if (key == null) return null;
 
         return fromKey(key);
     }
+
+    public abstract String key();
+    public abstract Component itemName();
+    public abstract Item itemType();
+    public abstract ItemLore itemLore();
+    public abstract ItemStackTemplate createTemplate();
+
+    /** Gets the id of the custom item. */
+    public Identifier id() {
+        return Infuse.id(key());
+    }
+
+    public CustomData customData() {
+        CompoundTag tag = new CompoundTag();
+        tag.putString(ITEM_KEY, key());
+
+        return CustomData.of(tag);
+    }
+
+    /**
+     * Checks if the given {@link ItemStack} is a custom item of this type.
+     *
+     * @param item The {@link ItemStack} to check.
+     * @return True if the item is a custom item of this type, false otherwise.
+     */
+    public boolean isItem(ItemStack item) {
+        if (!item.is(itemType())) return false;
+
+        CustomData data = item.get(DataComponents.CUSTOM_DATA);
+        if (data == null) return false;
+
+        Optional<String> key = data.copyTag().getString(ITEM_KEY);
+        return key.map(key()::equals).orElse(false);
+    }
+
+    /**
+     * Creates an {@link ItemStack} of this custom item.
+     * @return The created {@link ItemStack}.
+     */
+    public ItemStack createItem() {
+        return createItem(1);
+    }
+
+    /**
+     * Creates an {@link ItemStack} of this custom item with the specified count.
+     *
+     * @param count The number if items in the stack.
+     * @return The created {@link ItemStack}.
+     */
+    public ItemStack createItem(int count) {
+        return createTemplate().withCount(count).create();
+    }
+
+    public CraftingRecipe getRecipe() {
+        MainConfig config = Infuse.getInstance().config();
+
+        return config.getRecipe(this);
+    }
+
+    /**
+     * Defines what should happen when a player consumes the item.
+     * The default behavior is overridden.
+     *
+     * @param player The {@link Player} who consumed the item.
+     * @param item The {@link ItemStack} the player consumed.
+     */
+    public void onConsume(Player player, ItemStack item) {}
 }
