@@ -35,7 +35,7 @@ public abstract class RecipeManagerMixin implements MutableRecipeManager {
 
     @Override
     @Unique
-    public boolean infusev1$addRecipe(ResourceKey<Recipe<?>> key) {
+    public boolean infusev1$removeRecipe(ResourceKey<Recipe<?>> key) {
         boolean removed = ((MutableRecipeMap)recipes).infusev1$removeRecipe(key);
         if (removed) {
             this.finalizeRecipeLoading();
