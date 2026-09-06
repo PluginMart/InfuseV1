@@ -1,32 +1,23 @@
 # Starting score of any player.  A positive score will give the player that many positive effects.  A negative score will give the player that many negative effects.
-# Can be any number between -max_negative and max_positive
+# Can be any number between max_score and min_score
 starting_score: 0
 
-# Max and minimum scores.  A player's score cannot go past these bounds.
+# Maximum and minimum scores.  A player's score cannot go past these bounds.
+# These should be equal to or smaller than the number of effects in positive_effects and negative_effects
 max_score: 8
-min_score: -9
+min_score: -8
 
-# The score that a player will get banned at.
-# Setting the score to anything >= 0 will disable deathbans.
-# If the config is lower than min_score, players will not be banned.
-ban_score: -9
+# True if players should lose an effect when they die to something other than a player.
+lose_effect_on_natural_death: true
 
-# The score that a player will be set to when a reviver is used on them.
-revive_score: 0
-
-# Maximum number of positive effects a player can have.
-# Should be between 0 and the number of effects in positive_effects
-max_positive: 8
-
-# Maximum number of negative effects a player can have.
-# Should be between 0 and the number of effects in negative_effects
-max_negative: 8
+# True if players should get an effect when they kill someone at the minimum score.
+get_effect_on_min_score: false
 
 # A list of all the positive effects
-# Use effects from here: https://jd.papermc.io/paper/26.2/org/bukkit/potion/PotionEffectType.html
-# Effects should be in lowercase for proper conversion to NamespacedKeys
+# Use effects from here: https://minecraft.wiki/w/Effect#List_of_effects
+# Effects should be in lowercase for proper conversion to Identifiers
 # Warning: Effect names may change across versions.  If you run into errors, look for a list for your version.
-# You can also use custom effects defined in datapacks by their namespaced key
+# You can also use custom effects defined in datapacks by their identifier
 positive_effects:
 - strength
 - speed
@@ -38,7 +29,7 @@ positive_effects:
 - water_breathing
 
 # A list of all the negative effects
-# Use effects from here: https://jd.papermc.io/paper/26.2/org/bukkit/potion/PotionEffectType.html
+# Use effects from here: https://minecraft.wiki/w/Effect#List_of_effects
 negative_effects:
 - weakness
 - slowness
@@ -49,7 +40,7 @@ negative_effects:
 - unluck
 - hunger
 
-# The default level of each effect
+# The level of each effect
 effect_level: 1
 
 # Overrides for the "effect_level" config.
@@ -58,28 +49,12 @@ override_levels:
   haste: 2
 
 ###
-### Enhancer Configs
-###
-
-# The duration of the enhancer's effects in seconds
-enhancer_duration: 90
-
-# The level that your effects will be boosted to
-enhanced_level: 3
-
-# Overrides for the "boost_level" config.
-# Lets you change the level specific effects get boosted to.
-enhanced_override_levels:
-  strength: 2
-  health_boost: 2
-
-###
 ### Recipes
 ###
 
 # IMPORTANT: Recipes will not be updated until the server restarts!
 recipes:
-  infuse_effect:
+  good_potion:
     # Defines the type of recipe.
     # Can be "shaped" or "shapeless"
     # For shaped recipes:
@@ -98,27 +73,5 @@ recipes:
       - "DND"
     ingredients:
       D: diamond_block
-      N: netherite_ingot
-      B: glass_bottle
-  reviver:
-    type: shaped
-    shape:
-      - "GBE"
-      - "DND"
-      - "EBG"
-    ingredients:
-      D: dragon_breath
-      N: nether_star
-      B: netherite_block
-      G: ghast_tear
-      E: fermented_spider_eye
-  enhancer:
-    type: shaped
-    shape:
-      - "NGN"
-      - "GBG"
-      - "NGN"
-    ingredients:
-      G: enchanted_golden_apple
       N: netherite_ingot
       B: glass_bottle

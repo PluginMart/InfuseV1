@@ -61,28 +61,16 @@ public class MainConfig extends ImmutableConfig {
         return root.node("min_score").getInt(-9);
     }
 
-    public int banScore() {
+    public boolean loseEffectOnNaturalDeath() {
         assert root != null;
 
-        return root.node("ban_score").getInt(-9);
+        return root.node("lose_effect_on_natural_death").getBoolean(true);
     }
 
-    public int reviveScore() {
+    public boolean getEffectOnMinScore() {
         assert root != null;
 
-        return root.node("revive_score").getInt(0);
-    }
-
-    public int maxPositive() {
-        assert root != null;
-
-        return root.node("max_positive").getInt(8);
-    }
-
-    public int maxNegative() {
-        assert root != null;
-
-        return root.node("max_negative").getInt(8);
+        return root.node("get_effect_on_min_score").getBoolean(false);
     }
 
     public List<Holder.Reference<MobEffect>> positiveEffects() {
@@ -131,28 +119,6 @@ public class MainConfig extends ImmutableConfig {
         if (overrides.hasChild(effect.key().identifier().toShortString())) return Math.max(overrides.node(effect.key().identifier().toShortString()).getInt() - 1, 0);
 
         return Math.max(effectLevel() - 1, 0);
-    }
-
-    public int enhancerDuration() {
-        assert root != null;
-
-        return root.node("enhancer_duration").getInt(90);
-    }
-
-    public int enhancedLevel() {
-        assert root != null;
-
-        return root.node("enhanced_level").getInt(3);
-    }
-
-    public int getEffectiveEnhancedAmplifier(Holder.Reference<MobEffect> effect) {
-        assert root != null;
-
-        ConfigurationNode overrides = root.node("enhanced_override_levels");
-        if (overrides.hasChild(effect.key().identifier())) return Math.max(overrides.node(effect.key().identifier()).getInt() - 1, 0);
-        if (overrides.hasChild(effect.key().identifier().toShortString())) return Math.max(overrides.node(effect.key().identifier().toShortString()).getInt() - 1, 0);
-
-        return Math.max(enhancedLevel() - 1, 0);
     }
 
     @Nullable
