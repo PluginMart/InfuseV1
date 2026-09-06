@@ -11,6 +11,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.TooltipDisplay;
+import org.jspecify.annotations.NullMarked;
 import org.turbojax.infusev1.DataManager;
 import org.turbojax.infusev1.Infuse;
 import org.turbojax.infusev1.MainConfig;
@@ -18,6 +19,7 @@ import org.turbojax.infusev1.MainConfig;
 import java.util.List;
 import java.util.Optional;
 
+@NullMarked
 public class GoodPotion extends CustomItem {
     @Override
     public String key() {

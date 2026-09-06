@@ -16,6 +16,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.TooltipDisplay;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.turbojax.infusev1.DataManager;
 import org.turbojax.infusev1.Infuse;
@@ -23,6 +24,7 @@ import org.turbojax.infusev1.Infuse;
 import java.util.List;
 import java.util.Optional;
 
+@NullMarked
 public class InfuseEffect extends CustomItem {
     private final Holder.Reference<MobEffect> effect;
     private final ServerPlayer owner;

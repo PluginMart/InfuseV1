@@ -16,10 +16,13 @@ import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import org.jetbrains.annotations.Unmodifiable;
+import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 import org.turbojax.infusev1.Infuse;
 import org.turbojax.infusev1.MainConfig;
 
+@NullMarked
 public abstract class CustomItem {
     public static final String ITEM_KEY = "infusev1:item_key";
     private static final Map<String,CustomItem> REGISTERED = new HashMap<>();
@@ -38,6 +41,15 @@ public abstract class CustomItem {
      */
     public static void unregister(CustomItem item) {
         REGISTERED.remove(item.key());
+    }
+
+    /**
+     * Gets the currently registered items.
+     * Changes to this map will not affect the registered items.
+     */
+    @Unmodifiable
+    public static Map<String, CustomItem> getRegisteredItems() {
+        return Map.copyOf(REGISTERED);
     }
 
     /**
@@ -75,6 +87,7 @@ public abstract class CustomItem {
      * @return The key of the custom item, or null if the item is not a custom item or does not have a key.
      */
     @Nullable
+    @SuppressWarnings("DataFlowIssue")
     public static String getKey(ItemStack item) {
         if (!isCustomItem(item)) return null;
 
@@ -150,6 +163,7 @@ public abstract class CustomItem {
         return createTemplate().withCount(count).create();
     }
 
+    @Nullable
     public CraftingRecipe getRecipe() {
         MainConfig config = Infuse.getInstance().config();
 
