@@ -18,11 +18,7 @@ public class InfuseLoader extends Infuse implements DedicatedServerModInitialize
     public MinecraftServer server;
 
     @Override
-    public void onInitializeServer() {
-        // Loading the config/data
-        config.load();
-        dataManager.load();
-    }
+    public void onInitializeServer() {}
 
     @Override
     public Path configFile() {

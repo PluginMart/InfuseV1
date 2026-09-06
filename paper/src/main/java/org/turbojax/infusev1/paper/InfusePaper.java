@@ -9,11 +9,6 @@ import org.turbojax.infusev1.items.CustomItem;
 import java.nio.file.Path;
 
 public class InfusePaper extends Infuse {
-    public InfusePaper() {
-        config.load();
-        dataManager.load();
-    }
-
     @Override
     public Path configFile() {
         return Path.of("plugins", "Infuse", "config.yml");

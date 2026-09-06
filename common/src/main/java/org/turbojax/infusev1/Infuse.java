@@ -40,7 +40,9 @@ public abstract class Infuse {
 
         // Loading configs
         config = new MainConfig();
+        config.load();
         dataManager = new DataManager();
+        dataManager.load();
     }
 
     /** Gets an instance of the {@link Infuse} plugin. */
