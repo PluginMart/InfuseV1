@@ -65,7 +65,7 @@ public class GoodPotion extends CustomItem {
         // Removing a random negative effect from the player if they have any.
         if (pScore < 0) {
             dataManager.setScore(player, pScore + 1);
-            dataManager.removeRandomEffect(player);
+            dataManager.removeRandomEffect(player, true);
 
             item.shrink(1);
 

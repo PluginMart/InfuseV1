@@ -39,7 +39,7 @@ public class DrainCommand {
 
         infuse.dataManager().setScore(player, score - 1);
         infuse.dataManager().removeEffect(player, effect);
-        src.sendSystemMessage(Component.literal("You drained your ").withColor(TextColor.GREEN).append(Component.literal(effect.key().identifier().toShortString().toUpperCase()).withColor(TextColor.YELLOW)));
+        src.sendSystemMessage(Component.literal("You drained your ").withColor(TextColor.GREEN).append(Infuse.getEffectName(effect)));
         player.addItem(new InfuseEffect(effect, player.getPlainTextName()).createItem());
 
         return 1;

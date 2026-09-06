@@ -145,6 +145,8 @@ public class InfuseEffect extends CustomItem {
         // Giving the player the effect
         dataManager.addEffect(player, effect);
 
+        player.sendSystemMessage(Component.literal("You recieved ").withColor(TextColor.GREEN).append(Infuse.getEffectName(effect)));
+
         item.shrink(1);
         return item;
     }

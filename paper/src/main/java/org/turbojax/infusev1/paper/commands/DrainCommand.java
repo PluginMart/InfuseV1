@@ -2,6 +2,7 @@ package org.turbojax.infusev1.paper.commands;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.LiteralCommandNode;
+import io.papermc.paper.adventure.PaperAdventure;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.Component;
@@ -44,7 +45,7 @@ public class DrainCommand {
 
         infuse.dataManager().setScore(player.getUniqueId(), score - 1);
         infuse.dataManager().removeEffect(((CraftPlayer)player).getHandle(), effect);
-        src.getSender().sendMessage(Component.text("You drained your ", NamedTextColor.GREEN).append(Component.text(effect.key().identifier().toShortString().toUpperCase(), NamedTextColor.YELLOW)));
+        src.getSender().sendMessage(Component.text("You drained your ", NamedTextColor.GREEN).append(PaperAdventure.asAdventure(Infuse.getEffectName(effect))));
         player.give(CraftItemStack.asBukkitCopy(new InfuseEffect(effect, player.getName()).createItem()));
 
         return 1;

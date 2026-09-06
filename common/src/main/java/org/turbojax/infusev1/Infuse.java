@@ -2,10 +2,14 @@ package org.turbojax.infusev1;
 
 import java.nio.file.Path;
 
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 import org.jspecify.annotations.NonNull;
@@ -47,6 +51,10 @@ public abstract class Infuse {
         return instance;
     }
 
+    public static Component getEffectName(Holder.Reference<MobEffect> effect) {
+        return Component.literal(effect.key().identifier().toShortString().toUpperCase()).withColor(TextColor.YELLOW);
+    }
+
     /** Gets the path to save the config file to. */
     public abstract Path configFile();
 
@@ -84,7 +92,7 @@ public abstract class Infuse {
 
             if (deadScore > 0) {
                 // Removing a random positive effect
-                dataManager.removeRandomEffect(dead);
+                dataManager.removeRandomEffect(dead, true);
             } else {
                 // Giving a random negative effect
                 dataManager.addRandomEffect(dead, false);
@@ -102,7 +110,7 @@ public abstract class Infuse {
 
         if (killerScore < 0) {
             // Removing a random negative effect
-            dataManager.removeRandomEffect(killer);
+            dataManager.removeRandomEffect(killer, false);
         } else {
             // Giving a random positive effect
             dataManager.addRandomEffect(killer, true);
