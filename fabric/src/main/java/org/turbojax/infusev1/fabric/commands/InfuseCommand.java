@@ -1,4 +1,4 @@
-package org.turbojax.infusev1.commands;
+package org.turbojax.infusev1.fabric.commands;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -28,7 +28,6 @@ public class InfuseCommand {
     private final Infuse infuse = Infuse.getInstance();
     
     public static LiteralCommandNode<CommandSourceStack> build(String alias) {
-        Infuse infuse = Infuse.getInstance();
         MainConfig config = Infuse.getInstance().config();
         InfuseCommand cmd = new InfuseCommand();
 
@@ -68,8 +67,8 @@ public class InfuseCommand {
             .then(Commands.literal("give")
                 .then(Commands.argument("player", EntityArgument.players())
                     .then(Commands.argument("item", StringArgumentType.word())
-                        .suggests((c, builder) -> {
-                            Stream.of("enhancer", "infuse_effect", "reviver")
+                        .suggests((_, builder) -> {
+                            Stream.of("good_potion", "infuse_effect")
                                     .filter(s -> s.contains(builder.getRemaining().toLowerCase()))
                                     .sorted()
                                     .forEach(builder::suggest);
@@ -174,8 +173,7 @@ public class InfuseCommand {
                 return 1;
             }
 
-            ItemStack stack = item.createItem();
-            stack.setCount(count);
+            ItemStack stack = item.createItem(count);
 
             player.addItem(stack);
         }
