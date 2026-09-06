@@ -1,13 +1,12 @@
 {
   "minVersion": "0.8",
-  "package": "org.turbojax.infusev1.mixins",
+  "package": "org.turbojax.infusev1.fabric.mixins",
   "server": [
     "ConsumableMixin",
-    "ItemStackMixin",
     "MinecraftServerMixin",
     "PlayerListMixin",
-    "PlayerMixin",
     "RecipeManagerMixin",
-    "ServerPlayerMixin"
+    "ServerPlayerMixin",
+    "RecipeMapMixin"
   ]
 }

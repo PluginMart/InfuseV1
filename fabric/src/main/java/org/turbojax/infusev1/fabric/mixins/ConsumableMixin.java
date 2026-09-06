@@ -1,4 +1,4 @@
-package org.turbojax.infusev1.mixins;
+package org.turbojax.infusev1.fabric.mixins;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
@@ -13,13 +13,15 @@ import org.turbojax.infusev1.items.CustomItem;
 
 @Mixin(Consumable.class)
 public abstract class ConsumableMixin {
-    @Inject(method="onConsume", at= @At(value = "HEAD"))
+    @Inject(method="onConsume", at= @At(value = "HEAD"), cancellable = true)
     private void infusev1$handleConsumeEvent(Level level, LivingEntity user, ItemStack stack, CallbackInfoReturnable<ItemStack> cir) {
         if (!(user instanceof ServerPlayer player)) return;
 
-        CustomItem ci = CustomItem.fromItemStack(stack);
-        if (ci == null) return;
+        CustomItem customItem = CustomItem.fromItemStack(stack);
+        if (customItem == null) return;
 
-        cir.setReturnValue(ci.consume(player, stack));
+        ItemStack result = customItem.onConsume(player, stack);
+
+        cir.setReturnValue(result);
     }
 }

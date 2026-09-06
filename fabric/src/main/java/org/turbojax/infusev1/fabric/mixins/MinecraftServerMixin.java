@@ -1,4 +1,4 @@
-package org.turbojax.infusev1.mixins;
+package org.turbojax.infusev1.fabric.mixins;
 
 import net.minecraft.commands.Commands;
 import net.minecraft.server.MinecraftServer;
@@ -8,7 +8,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.turbojax.infusev1.Infuse;
-import org.turbojax.infusev1.commands.InfuseCommand;
+import org.turbojax.infusev1.fabric.commands.InfuseCommand;
 import org.turbojax.infusev1.fabric.InfuseLoader;
 
 @Mixin(MinecraftServer.class)
