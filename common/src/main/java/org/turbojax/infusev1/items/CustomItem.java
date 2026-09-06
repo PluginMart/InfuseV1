@@ -184,6 +184,9 @@ public abstract class CustomItem {
      *
      * @param player The {@link Player} who consumed the item.
      * @param item The {@link ItemStack} the player consumed.
+     * @return The {@link ItemStack} to be returned to the player.
      */
-    public void onConsume(Player player, ItemStack item) {}
+    public ItemStack onConsume(Player player, ItemStack item) {
+        return ItemStack.EMPTY;
+    }
 }

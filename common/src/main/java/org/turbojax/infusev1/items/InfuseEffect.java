@@ -82,7 +82,7 @@ public class InfuseEffect extends CustomItem {
     }
 
     @Override
-    public void onConsume(Player player, ItemStack item) {
+    public ItemStack onConsume(Player player, ItemStack item) {
         DataManager dataManager = Infuse.getInstance().dataManager();
         int pScore = dataManager.getScore(player);
 
@@ -93,7 +93,7 @@ public class InfuseEffect extends CustomItem {
 
             item.shrink(1);
 
-            return;
+            return item;
         }
 
         // Getting the effect to give to the player
@@ -103,13 +103,13 @@ public class InfuseEffect extends CustomItem {
             Infuse.LOGGER.error("Holder: {}", player.getPlainTextName());
 
             player.sendSystemMessage(Component.literal("Something went wrong while parsing the effect.  Contact an administrator").withColor(TextColor.RED));
-            return;
+            return item;
         }
 
         // If the player already has the effect, don't let them drink it.
         if (dataManager.hasEffect(player, effect)) {
             player.sendSystemMessage(Component.literal("You already have this effect!").withColor(TextColor.RED));
-            return;
+            return item;
         }
 
         // Increasing the player's score
@@ -119,5 +119,6 @@ public class InfuseEffect extends CustomItem {
         dataManager.addEffect(player, effect);
 
         item.shrink(1);
+        return item;
     }
 }

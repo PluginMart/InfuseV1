@@ -56,7 +56,7 @@ public class GoodPotion extends CustomItem {
     }
 
     @Override
-    public void onConsume(Player player, ItemStack item) {
+    public ItemStack onConsume(Player player, ItemStack item) {
         DataManager dataManager = Infuse.getInstance().dataManager();
         MainConfig config = Infuse.getInstance().config();
 
@@ -69,14 +69,14 @@ public class GoodPotion extends CustomItem {
 
             item.shrink(1);
 
-            return;
+            return item;
         }
 
         // Making sure the player doesn't have the max number of positive effects
         // maybe replace with a "score" attribute that is the number of effects the player has
         if (pScore >= config.maxPositive()) {
             player.sendSystemMessage(Component.literal("You already have the maximum number of positive effects"));
-            return;
+            return item;
         }
 
         // Adding a random positive effect
@@ -84,5 +84,6 @@ public class GoodPotion extends CustomItem {
         dataManager.addRandomEffect(player, true);
 
         item.shrink(1);
+        return item;
     }
 }
