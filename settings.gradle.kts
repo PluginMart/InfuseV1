@@ -1,5 +1,15 @@
-plugins {
-  id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+pluginManagement {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+        maven("https://maven.fabricmc.net/")
+    }
 }
 
-rootProject.name = "InfuseV1"
+plugins {
+    id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
+}
+
+rootProject.name = "infusev1"
+
+include("common", "fabric", "paper")
