@@ -2,18 +2,13 @@ package org.turbojax.infusev1;
 
 import java.nio.file.Path;
 
-import com.mojang.authlib.GameProfile;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.Component;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.permissions.Permission;
-import net.minecraft.server.permissions.Permissions;
-import net.minecraft.server.players.NameAndId;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.turbojax.infusev1.items.CustomItem;
@@ -68,6 +63,7 @@ public abstract class Infuse {
         return dataManager;
     }
 
+    /** Reloads recipes from the config */
     public abstract void reloadRecipes();
 
     /**
@@ -78,45 +74,38 @@ public abstract class Infuse {
      * @param dead The {@link ServerPlayer} who died
      */
     public void onDeath(ServerPlayer dead) {
+        if (dead.getKillCredit() == null && !config.loseEffectOnNaturalDeath()) return;
+
         int deadScore = dataManager.getScore(dead);
 
-        Player killer = dead.getLastHurtByPlayer();
-        if (killer == null) return;
-        if (killer != dead.getKillCredit()) return;
-
-        int killerScore = dataManager.getScore(killer);
-
-        if (deadScore - 1 >= config.minScore()) {
+        if (deadScore != config.minScore()) {
             // Updating the player's score
             dataManager.setScore(dead, deadScore - 1);
 
-            // Banning the player if necessary
-            int banScore = config.banScore();
-            if (banScore < 0 && deadScore - 1 == banScore) {
-                dataManager.ban(dead.nameAndId());
-                dead.connection.disconnect(Component.translatable("multiplayer.disconnect.banned"));
-            }
-
-            if (deadScore > 0 && deadScore <= config.maxPositive()) {
+            if (deadScore > 0) {
                 // Removing a random positive effect
                 dataManager.removeRandomEffect(dead);
-            } else if (deadScore <= 0 && deadScore > -config.maxNegative()) {
+            } else {
                 // Giving a random negative effect
                 dataManager.addRandomEffect(dead, false);
             }
         }
 
-        if (killerScore + 1 <= config.maxScore()) {
-            // Updating the player's score
-            dataManager.setScore(killer, killerScore + 1);
+        if (!(dead.getKillCredit() instanceof Player killer)) return;
+        int killerScore = dataManager.getScore(killer);
 
-            if (killerScore < 0 && killerScore >= -config.maxNegative()) {
-                // Removing a random negative effect
-                dataManager.removeRandomEffect(killer);
-            } else if (killerScore >= 0 && killerScore < config.maxPositive()) {
-                // Giving a random positive effect
-                dataManager.addRandomEffect(killer, true);
-            }
+        if (deadScore == config.minScore() && !config.getEffectOnMinScore()) return;
+        if (killerScore == config.maxScore()) return;
+
+        // Updating the player's score
+        dataManager.setScore(killer, killerScore + 1);
+
+        if (killerScore < 0) {
+            // Removing a random negative effect
+            dataManager.removeRandomEffect(killer);
+        } else {
+            // Giving a random positive effect
+            dataManager.addRandomEffect(killer, true);
         }
     }
 
@@ -136,57 +125,7 @@ public abstract class Infuse {
      * @param player The {@link ServerPlayer} who joined.
      */
     public void onJoin(ServerPlayer player) {
-        // Resetting the player's effects as necessary
-        if (dataManager.needsReset(player)) {
-            dataManager.resetEffects(player);
-        }
-
-        // Registering the recipes?
-        // TODO: Fix recipes
+        // Registering the recipes
+        player.awardRecipesByKey(CustomItem.getRegisteredItems().values().stream().map(i -> ResourceKey.create(Registries.RECIPE, i.id())).toList());
     }
-
-    /**
-     * Gets the {@link NameAndId} of a player.
-     *
-     * @param name The name of a player.
-     */
-    @Nullable
-    public abstract NameAndId getPlayer(String name);
-
-    /**
-     * Gets the {@link GameProfile} of a player.
-     * If the profile could not be resolved, it returns the offline mode profile.
-     *
-     * @param player The player to look up.
-     */
-    public abstract GameProfile getProfile(NameAndId player);
-
-    /**
-     * Handles banning and kicking a player.
-     * @param player The player to ban.
-     */
-    public abstract void banPlayer(NameAndId player);
-
-    /**
-     * Handles unbanning a player.
-     * @param player The player to unban.
-     */
-    public abstract void unbanPlayer(NameAndId player);
-
-    /**
-     * Checks if the {@link CommandSourceStack} has the specified permission.
-     * If the permission is not found, it checks if the source is an admin.
-     *
-     * @param source The related CommandSourceStack.
-     */
-    public boolean hasPermission(CommandSourceStack source, String permission) {
-        return hasPermission(source, permission, Permissions.COMMANDS_ADMIN);
-    }
-
-    /**
-     * Checks if the {@link CommandSourceStack} has the specified permission
-     * @param source The related CommandSourceStack.
-     * @param fallbackPermission The fallback permission to check for if the string permission is not found.
-     */
-    public abstract boolean hasPermission(CommandSourceStack source, String permission, Permission fallbackPermission);
 }

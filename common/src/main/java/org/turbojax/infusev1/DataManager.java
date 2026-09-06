@@ -3,7 +3,6 @@ package org.turbojax.infusev1;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
-import org.jetbrains.annotations.Unmodifiable;
 import org.jspecify.annotations.NullMarked;
 
 import net.minecraft.core.Holder;
@@ -162,72 +161,10 @@ public class DataManager extends MutableConfig {
         removeEffect(player, removed);
     }
 
-    public @Unmodifiable List<NameAndId> getBanned() {
-        assert root != null;
-
-        return getList(root.node("banned"), String.class)
-            .stream()
-            .map(s -> {
-                String[] parts = s.split(":");
-                UUID id = UUID.fromString(parts[1]);
-                String name = parts[0];
-
-                return new NameAndId(id, name);
-            })
-            .toList();
-    }
-
-    public void setBanned(List<NameAndId> banned) {
-        assert root != null;
-
-        setList(root.node("banned"), String.class, banned.stream()
-            .map(n -> "%s:%s".formatted(n.name(), n.id()))
-            .toList());
-
-        save();
-    }
-
-    public void ban(NameAndId player) {
-        assert root != null;
-
-        List<NameAndId> banned = new ArrayList<>(getBanned());
-
-        if (banned.contains(player)) return;
-
-        plugin.banPlayer(player);
-
-        banned.add(player);
-        setBanned(banned);
-    }
-
-    public void unban(NameAndId player) {
-        assert root != null;
-
-        List<NameAndId> banned = new ArrayList<>(getBanned());
-        if (!banned.contains(player)) return;
-        banned.remove(player);
-        setBanned(banned);
-
-        plugin.unbanPlayer(player);
-
-        setScore(player.id(), plugin.config().reviveScore());
-
-        set(root.node(player.id().toString(), "needs_reset"), true);
-        save();
-    }
-
-    public boolean needsReset(Player player) {
-        assert root != null;
-
-        return root.node(player.getUUID().toString(), "needs_reset").getBoolean(false);
-    }
-
     public void resetEffects(Player player) {
         assert root != null;
 
-        int score = getScore(player);
-        if (score > 0) score = Math.min(score, plugin.config().maxPositive());
-        else score = Math.max(score, -plugin.config().maxNegative());
+        int score = Math.clamp(getScore(player), plugin.config().minScore(), plugin.config().maxScore());
 
         // Getting the effects to give the player
         List<Holder.Reference<MobEffect>> newEffects = new ArrayList<>();
@@ -250,8 +187,6 @@ public class DataManager extends MutableConfig {
 
         // Equipping the new effects
         newEffects.forEach(e -> player.addEffect(new MobEffectInstance(e, -1, plugin.config().getEffectiveAmplifier(e))));
-
-        set(root.node(player.getUUID().toString(), "needs_reset"), false);
 
         save();
     }

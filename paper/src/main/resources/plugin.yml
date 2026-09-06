@@ -12,8 +12,6 @@ permissions:
     description: "Lets players use `/infuse help`"
   infusev1.reload:
     description: "Lets players use `/infuse reload`"
-  infusev1.revive:
-    description: "Lets players use `/infuse revive`"
   infusev1.getscore:
     description: "Lets players use `/infuse getscore`"
   infusev1.getscore.other:

@@ -11,9 +11,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.permissions.Permission;
-import net.minecraft.server.permissions.PermissionLevel;
-import net.minecraft.server.players.NameAndId;
 
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.world.item.ItemStack;
 import org.jspecify.annotations.Nullable;
 import org.turbojax.infusev1.Infuse;
@@ -32,31 +31,23 @@ public class InfuseCommand {
 
         return Commands.literal(alias)
             .then(Commands.literal("help")
+                .requires(src -> cmd.hasPermission(src, "infusev1.help"))
                 .executes(ctx -> cmd.help(ctx.getSource()))
             )
             .then(Commands.literal("reload")
+                .requires(src -> cmd.hasPermission(src, "infusev1.reload", Permissions.COMMANDS_ADMIN))
                 .executes(ctx -> cmd.reload(ctx.getSource()))
             )
-            .then(Commands.literal("revive")
-                .then(Commands.argument("player", StringArgumentType.word())
-                        .suggests((c, builder) -> {
-                            cmd.infuse.dataManager().getBanned()
-                                    .stream()
-                                    .map(NameAndId::name)
-                                    .forEach(builder::suggest);
-
-                            return builder.buildFuture();
-                        })
-                    .executes(c -> cmd.revive(c.getSource(), c.getArgument("player", String.class)))
-                )
-            )
             .then(Commands.literal("getscore")
+                .requires(src -> cmd.hasPermission(src, "infusev1.getscore"))
                 .executes(c -> cmd.getScore(c.getSource(), null))
                 .then(Commands.argument("player", EntityArgument.players())
+                    .requires(src -> cmd.hasPermission(src, "infusev1.getscore.other", Permissions.COMMANDS_ADMIN))
                     .executes(c -> cmd.getScore(c.getSource(), EntityArgument.getPlayers(c, "player")))
                 )
             )
             .then(Commands.literal("setscore")
+                .requires(src -> cmd.hasPermission(src, "infusev1.setscore", Permissions.COMMANDS_ADMIN))
                 .then(Commands.argument("player", EntityArgument.players())
                     .then(Commands.argument("score", IntegerArgumentType.integer(config.minScore(), config.maxScore()))
                         .executes(c -> cmd.setScore(c.getSource(), EntityArgument.getPlayers(c, "player"), c.getArgument("score", Integer.class)))
@@ -64,6 +55,7 @@ public class InfuseCommand {
                 )
             )
             .then(Commands.literal("give")
+                .requires(src -> cmd.hasPermission(src, "infusev1.give", Permissions.COMMANDS_ADMIN))
                 .then(Commands.argument("player", EntityArgument.players())
                     .then(Commands.argument("item", StringArgumentType.word())
                         .suggests((_, builder) -> {
@@ -85,12 +77,9 @@ public class InfuseCommand {
     }
 
     public int help(CommandSourceStack ctx) {
-        if (!infuse.hasPermission(ctx, "infusev1.help", new Permission.HasCommandLevel(PermissionLevel.ALL))) return 1;
-
         ctx.sendSystemMessage(Component.literal("/infuse").withColor(TextColor.AQUA));
         ctx.sendSystemMessage(Component.literal(" |- help").withColor(TextColor.AQUA).append(Component.literal(": Shows the help message").withColor(TextColor.WHITE)));
         ctx.sendSystemMessage(Component.literal(" |- reload").withColor(TextColor.AQUA).append(Component.literal(": Reloads the config").withColor(TextColor.WHITE)));
-        ctx.sendSystemMessage(Component.literal(" |- revive ").withColor(TextColor.AQUA).append(Component.literal("<player>").withColor(TextColor.GOLD)).append(Component.literal(": Revives a dead player").withColor(TextColor.WHITE)));
         ctx.sendSystemMessage(Component.literal(" |- setscore ").withColor(TextColor.AQUA).append(Component.literal("<player> <score>").withColor(TextColor.GOLD)).append(Component.literal(": Sets a player's score.  Also rerolls their effects.").withColor(TextColor.WHITE)));
         ctx.sendSystemMessage(Component.literal(" |- getscore ").withColor(TextColor.AQUA).append(Component.literal("<player>").withColor(TextColor.GOLD)).append(Component.literal(": Gets a player's score").withColor(TextColor.WHITE)));
         ctx.sendSystemMessage(Component.literal(" \\- give ").withColor(TextColor.AQUA).append(Component.literal("<player> <item> [count]").withColor(TextColor.GOLD)).append(Component.literal(": Gives a player an infuse item.").withColor(TextColor.WHITE)));
@@ -99,8 +88,6 @@ public class InfuseCommand {
     }
 
     public int reload(CommandSourceStack ctx) {
-        if (!infuse.hasPermission(ctx, "infusev1.reload")) return 1;
-
         Infuse.getInstance().config().load();
         // TODO: Reload recipes
         ctx.sendSystemMessage(Component.literal("Reloaded the config.").withColor(TextColor.GREEN));
@@ -108,35 +95,17 @@ public class InfuseCommand {
         return 1;
     }
 
-    public int revive(CommandSourceStack ctx, String name) {
-        if (!infuse.hasPermission(ctx, "infusev1.revive")) return 1;
-
-        NameAndId player = infuse.getPlayer(name);
-        if (player == null || !infuse.dataManager().getBanned().contains(player)) {
-            ctx.sendSystemMessage(Component.literal("Player \"" + name + "\" is not banned").withColor(TextColor.RED));
-            return 1;
-        }
-
-        infuse.dataManager().unban(player);
-        ctx.sendSystemMessage(Component.literal("Revived " + name + "!").withColor(TextColor.GREEN));
-
-        return 1;
-    }
-    
     public int getScore(CommandSourceStack ctx, @Nullable Collection<ServerPlayer> targets) {
         if (targets == null) {
-            if (!infuse.hasPermission(ctx, "infusev1.getscore", new Permission.HasCommandLevel(PermissionLevel.ALL))) return 1;
+            ServerPlayer target = ctx.getPlayer();
 
-            if (ctx.isPlayer()) {
-                targets = List.of(ctx.getPlayer());
+            if (target != null) {
+                targets = List.of(target);
             } else {
                 ctx.sendSystemMessage(Component.literal("You must specify a target.").withColor(TextColor.RED));
                 return 1;
             }
-        } else {
-            if (!infuse.hasPermission(ctx, "infusev1.getscore.other")) return 1;
         }
-
 
         targets.forEach(p -> ctx.sendSystemMessage(Component.literal(p.getPlainTextName() + "'s score is " + infuse.dataManager().getScore(p))));
 
@@ -144,18 +113,9 @@ public class InfuseCommand {
     }
     
     public int setScore(CommandSourceStack ctx, Collection<ServerPlayer> targets, int score) {
-        if (!infuse.hasPermission(ctx, "infusev1.setscore")) return 1;
         for (ServerPlayer player : targets) {
             infuse.dataManager().setScore(player, score);
             infuse.dataManager().resetEffects(player);
-
-            // Banning the player if necessary
-            int banScore = infuse.config().banScore();
-            if (banScore < 0 && score == banScore) {
-                infuse.dataManager().ban(player.nameAndId());
-
-                player.connection.disconnect(Component.translatable("multiplayer.disconnect.banned"));
-            }
         }
 
         ctx.sendSystemMessage(Component.literal("Set %s to %d".formatted(targets.size() == 1 ? "%s's score".formatted(targets.iterator().next().getPlainTextName()) : "%d player's scores".formatted(targets.size()), score)).withColor(TextColor.GREEN));
@@ -164,7 +124,6 @@ public class InfuseCommand {
     }
 
     public int give(CommandSourceStack ctx, Collection<ServerPlayer> targets, String itemKey, int count) {
-        if (!infuse.hasPermission(ctx, "infusev1.give")) return 1;
         for (ServerPlayer player : targets) {
             CustomItem item = CustomItem.fromKey(itemKey);
             if (item == null) {
@@ -180,5 +139,17 @@ public class InfuseCommand {
         ctx.sendSystemMessage(Component.literal("Gave %s %s %s%s".formatted((targets.size() == 1 ? targets.iterator().next().getPlainTextName() : targets.size() + " players"), (count == 1 ? "a" : count), itemKey, ( count == 1 ? "" : "s"))));
 
         return 1;
+    }
+
+    public boolean hasPermission(CommandSourceStack source, String permission) {
+        return hasPermission(source, permission, null);
+    }
+
+    public boolean hasPermission(CommandSourceStack source, String permission, @Nullable Permission fallbackPermission) {
+        // TODO: Check luckperms
+
+        if (fallbackPermission == null) return true;
+
+        return source.permissions().hasPermission(fallbackPermission);
     }
 }

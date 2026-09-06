@@ -74,7 +74,7 @@ public class GoodPotion extends CustomItem {
 
         // Making sure the player doesn't have the max number of positive effects
         // maybe replace with a "score" attribute that is the number of effects the player has
-        if (pScore >= config.maxPositive()) {
+        if (pScore >= config.maxScore()) {
             player.sendSystemMessage(Component.literal("You already have the maximum number of positive effects"));
             return item;
         }
