@@ -10,23 +10,22 @@ commands:
   drain:
     description: Drains a random positive effect from the player
     usage: /drain
+    permission: infusev1.drain
 permissions:
   infusev1.help:
     description: "Lets players use `/infuse help`"
-    default: op
+    default: true
   infusev1.drain:
     description: "Lets players use `/infuse drain`"
+    default: true
   infusev1.reload:
     description: "Lets players use `/infuse reload`"
-    default: op
   infusev1.getscore:
     description: "Lets players use `/infuse getscore`"
+    default: true
   infusev1.getscore.other:
     description: "Lets players use `/infuse getscore <player>`"
-    default: op
   infusev1.setscore:
     description: "Lets players use `/infuse setscore`"
-    default: op
   infusev1.give:
     description: "Lets players use `/infuse give`"
-    default: op
