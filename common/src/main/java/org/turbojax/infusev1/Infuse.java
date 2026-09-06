@@ -16,6 +16,9 @@ import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.turbojax.infusev1.items.CustomItem;
+import org.turbojax.infusev1.items.GoodPotion;
+import org.turbojax.infusev1.items.InfuseEffect;
 
 public abstract class Infuse {
     public static final Logger LOGGER = LoggerFactory.getLogger("InfuseV1");
@@ -33,6 +36,10 @@ public abstract class Infuse {
 
         instance = this;
 
+        // Registering items
+        CustomItem.register(new GoodPotion(), InfuseEffect.EMPTY);
+
+        // Loading configs
         config = new MainConfig();
         dataManager = new DataManager();
     }

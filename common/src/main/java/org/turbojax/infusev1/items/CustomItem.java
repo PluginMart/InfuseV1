@@ -36,6 +36,14 @@ public abstract class CustomItem {
     }
 
     /**
+     * Register multiple custom items.
+     * @param items The custom items to register.
+     */
+    public static void register(CustomItem... items) {
+        for (CustomItem item : items) register(item);
+    }
+
+    /**
      * Unregisters a custom item.
      * @param item The custom item to unregister.
      */
