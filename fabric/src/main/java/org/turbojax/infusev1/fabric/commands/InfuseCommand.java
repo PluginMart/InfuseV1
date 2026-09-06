@@ -22,7 +22,6 @@ import org.turbojax.infusev1.items.CustomItem;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class InfuseCommand {
     private final Infuse infuse = Infuse.getInstance();
@@ -68,7 +67,7 @@ public class InfuseCommand {
                 .then(Commands.argument("player", EntityArgument.players())
                     .then(Commands.argument("item", StringArgumentType.word())
                         .suggests((_, builder) -> {
-                            Stream.of("good_potion", "infuse_effect")
+                            CustomItem.getRegisteredItems().keySet().stream()
                                     .filter(s -> s.contains(builder.getRemaining().toLowerCase()))
                                     .sorted()
                                     .forEach(builder::suggest);

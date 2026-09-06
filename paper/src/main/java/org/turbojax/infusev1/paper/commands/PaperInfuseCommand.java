@@ -21,7 +21,6 @@ import org.turbojax.infusev1.MainConfig;
 import org.turbojax.infusev1.items.CustomItem;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 public class PaperInfuseCommand {
     private final Infuse infuse = Infuse.getInstance();
@@ -67,7 +66,7 @@ public class PaperInfuseCommand {
                         .then(Commands.argument("player", ArgumentTypes.players())
                                 .then(Commands.argument("item", StringArgumentType.word())
                                         .suggests((c, builder) -> {
-                                            Stream.of("enhancer", "infuse_effect", "reviver")
+                                            CustomItem.getRegisteredItems().keySet().stream()
                                                     .filter(s -> s.contains(builder.getRemaining().toLowerCase()))
                                                     .sorted()
                                                     .forEach(builder::suggest);
