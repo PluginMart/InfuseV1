@@ -17,7 +17,7 @@ Removes one of your negative effects or gives you a positive effect.
 `/infuse`  
  |- `help`: Shows the help message.  
  |- `reload`: Reloads the config.  
-|- `drain`: Drains a positive effect from the player.  
+ |- `drain`: Drains a positive effect from the player.  
  |- `setscore <player> <score>`: Sets a player's score.  Also rerolls their effects.  
  |- `getscore <player>`: Gets a player's score.  
  \\- `give <player> <item> [count]`: Gives a player an infuse item.
@@ -30,7 +30,7 @@ Removes one of your negative effects or gives you a positive effect.
 - `infusev1.drain`: Lets players use `/infuse drain`
 - `infusev1.setscore`: Lets players use `/infuse setscore`
 - `infusev1.getscore`: Lets players use `/infuse getscore`
-- `infusev1.give`: Lets playerss use `/infuse give`
+- `infusev1.give`: Lets players use `/infuse give`
 
 ## Config
 ```yml
