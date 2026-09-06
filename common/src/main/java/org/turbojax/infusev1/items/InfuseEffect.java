@@ -5,9 +5,9 @@ import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -26,10 +26,12 @@ import java.util.Optional;
 
 @NullMarked
 public class InfuseEffect extends CustomItem {
-    private final Holder.Reference<MobEffect> effect;
-    private final ServerPlayer owner;
+    public static final InfuseEffect EMPTY = new InfuseEffect(MobEffects.ABSORPTION, "");
 
-    public InfuseEffect(Holder.Reference<MobEffect> effect, ServerPlayer owner) {
+    private final Holder<MobEffect> effect;
+    private final String owner;
+
+    public InfuseEffect(Holder<MobEffect> effect, String owner) {
         this.effect = effect;
         this.owner = owner;
     }
@@ -41,7 +43,7 @@ public class InfuseEffect extends CustomItem {
 
     @Override
     public Component itemName() {
-        String effectName = effect.key().identifier().toShortString();
+        String effectName = effect.unwrapKey().orElseThrow().identifier().toShortString();
         effectName = effectName.substring(0, 1).toUpperCase() + effectName.substring(1);
         return Component.literal(effectName);
     }
@@ -53,7 +55,7 @@ public class InfuseEffect extends CustomItem {
 
     @Override
     public ItemLore itemLore() {
-        return new ItemLore(List.of(Component.literal("Extracted from " + owner.getPlainTextName())));
+        return new ItemLore(List.of(Component.literal("Extracted from " + owner)));
     }
 
     @Override
