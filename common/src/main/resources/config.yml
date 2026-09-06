@@ -68,10 +68,11 @@ recipes:
     # See https://minecraft.wiki/w/Recipe_(Java_Edition)#crafting_shaped for info on recipes.
     type: shaped
     shape:
-      - "DND"
-      - "DBD"
-      - "DND"
+      - TDT
+      - PNP
+      - TDT
     ingredients:
-      D: diamond_block
-      N: netherite_ingot
-      B: glass_bottle
+      T: minecraft:totem_of_undying
+      D: minecraft:diamond_block
+      N: minecraft:netherite_ingot
+      P: minecraft:potion
