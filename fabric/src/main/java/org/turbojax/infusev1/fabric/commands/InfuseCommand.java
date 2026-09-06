@@ -91,7 +91,8 @@ public class InfuseCommand {
 
     public int reload(CommandSourceStack ctx) {
         Infuse.getInstance().config().load();
-        // TODO: Reload recipes
+        Infuse.getInstance().reloadRecipes();
+
         ctx.sendSystemMessage(Component.literal("Reloaded the config.").withColor(TextColor.GREEN));
 
         return 1;
