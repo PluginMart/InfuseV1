@@ -36,10 +36,6 @@ public class MainConfig extends ImmutableConfig {
             Files.copy(in, file);
             in.close();
 
-            in = this.getClass().getClassLoader().getResourceAsStream("config.yml");
-            assert in != null;
-            Files.copy(in, file.getParent().resolve("config2.yml"));
-            in.close();
             return true;
         } catch (IOException e) {
             Infuse.LOGGER.error("Could not create {}.  Make sure the user has the right permissions.", file.getFileName());
