@@ -23,7 +23,7 @@ import java.util.Optional;
 public class GoodPotion extends CustomItem {
     @Override
     public String key() {
-        return "infuse_effect";
+        return "good_potion";
     }
 
     @Override

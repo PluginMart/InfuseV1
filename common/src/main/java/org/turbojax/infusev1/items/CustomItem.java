@@ -32,6 +32,11 @@ public abstract class CustomItem {
      * @param item The custom item to register.
      */
     public static void register(CustomItem item) {
+        if (REGISTERED.containsKey(item.key())) {
+            Infuse.LOGGER.info("Custom item {} already registered.", item.key());
+            return;
+        }
+
         REGISTERED.put(item.key(), item);
     }
 
