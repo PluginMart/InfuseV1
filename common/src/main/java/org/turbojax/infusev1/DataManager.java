@@ -1,7 +1,7 @@
 package org.turbojax.infusev1;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
@@ -150,7 +150,7 @@ public class DataManager extends MutableConfig {
         // Selecting a random effect
         Holder.Reference<MobEffect> effect = possibleEffects.get((int)(Math.random() * possibleEffects.size()));
 
-        player.sendSystemMessage(Component.literal("You recieved ").withColor(positive ? TextColor.GREEN : TextColor.RED).append(Infuse.getEffectName(effect)));
+        player.sendSystemMessage(Component.literal("You recieved ").withColor(positive ? ChatFormatting.GREEN.getColor() : ChatFormatting.RED.getColor()).append(Infuse.getEffectName(effect)));
 
         // Equipping the effect
         addEffect(player, effect);
@@ -161,7 +161,7 @@ public class DataManager extends MutableConfig {
 
         List<Holder.Reference<MobEffect>> effects = new ArrayList<>(getEffects(player));
         Holder.Reference<MobEffect> removed = effects.remove((int)(Math.random() * effects.size()));
-        player.sendSystemMessage(Component.literal("You lost ").withColor(green ? TextColor.GREEN : TextColor.RED).append(Infuse.getEffectName(removed)));
+        player.sendSystemMessage(Component.literal("You lost ").withColor(green ? ChatFormatting.GREEN.getColor() : ChatFormatting.RED.getColor()).append(Infuse.getEffectName(removed)));
 
         removeEffect(player, removed);
     }

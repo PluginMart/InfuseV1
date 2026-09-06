@@ -1,12 +1,12 @@
 package org.turbojax.infusev1.items;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffects;
@@ -129,13 +129,13 @@ public class InfuseEffect extends CustomItem {
             Infuse.LOGGER.error("Failed to get an effect from an Infuse Effect!");
             Infuse.LOGGER.error("Holder: {}", player.getPlainTextName());
 
-            player.sendSystemMessage(Component.literal("Something went wrong while parsing the effect.  Contact an administrator").withColor(TextColor.RED));
+            player.sendSystemMessage(Component.literal("Something went wrong while parsing the effect.  Contact an administrator").withColor(ChatFormatting.RED.getColor()));
             return item;
         }
 
         // If the player already has the effect, don't let them drink it.
         if (dataManager.hasEffect(player, effect)) {
-            player.sendSystemMessage(Component.literal("You already have this effect!").withColor(TextColor.RED));
+            player.sendSystemMessage(Component.literal("You already have this effect!").withColor(ChatFormatting.RED.getColor()));
             return item;
         }
 
@@ -145,7 +145,7 @@ public class InfuseEffect extends CustomItem {
         // Giving the player the effect
         dataManager.addEffect(player, effect);
 
-        player.sendSystemMessage(Component.literal("You recieved ").withColor(TextColor.GREEN).append(Infuse.getEffectName(effect)));
+        player.sendSystemMessage(Component.literal("You recieved ").withColor(ChatFormatting.GREEN.getColor()).append(Infuse.getEffectName(effect)));
 
         item.shrink(1);
         return item;

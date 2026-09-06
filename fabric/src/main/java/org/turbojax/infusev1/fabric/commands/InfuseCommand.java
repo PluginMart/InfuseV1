@@ -4,11 +4,11 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.permissions.Permission;
 
@@ -78,13 +78,13 @@ public class InfuseCommand {
     }
 
     public int help(CommandSourceStack ctx) {
-        ctx.sendSystemMessage(Component.literal("/infuse").withColor(TextColor.AQUA));
-        ctx.sendSystemMessage(Component.literal(" |- help").withColor(TextColor.AQUA).append(Component.literal(": Shows the help message").withColor(TextColor.WHITE)));
-        ctx.sendSystemMessage(Component.literal(" |- drain").withColor(TextColor.AQUA).append(Component.literal(": Drains a positive effect").withColor(TextColor.WHITE)));
-        ctx.sendSystemMessage(Component.literal(" |- reload").withColor(TextColor.AQUA).append(Component.literal(": Reloads the config").withColor(TextColor.WHITE)));
-        ctx.sendSystemMessage(Component.literal(" |- setscore ").withColor(TextColor.AQUA).append(Component.literal("<targets> <score>").withColor(TextColor.GOLD)).append(Component.literal(": Sets a player's score.  Also rerolls their effects.").withColor(TextColor.WHITE)));
-        ctx.sendSystemMessage(Component.literal(" |- getscore ").withColor(TextColor.AQUA).append(Component.literal("[targets]").withColor(TextColor.GOLD)).append(Component.literal(": Gets a player's score").withColor(TextColor.WHITE)));
-        ctx.sendSystemMessage(Component.literal(" \\- give ").withColor(TextColor.AQUA).append(Component.literal("<targets> <item> [count]").withColor(TextColor.GOLD)).append(Component.literal(": Gives a player an infuse item.").withColor(TextColor.WHITE)));
+        ctx.sendSystemMessage(Component.literal("/infuse").withColor(ChatFormatting.AQUA.getColor()));
+        ctx.sendSystemMessage(Component.literal(" |- help").withColor(ChatFormatting.AQUA.getColor()).append(Component.literal(": Shows the help message").withColor(ChatFormatting.WHITE.getColor())));
+        ctx.sendSystemMessage(Component.literal(" |- drain").withColor(ChatFormatting.AQUA.getColor()).append(Component.literal(": Drains a positive effect").withColor(ChatFormatting.WHITE.getColor())));
+        ctx.sendSystemMessage(Component.literal(" |- reload").withColor(ChatFormatting.AQUA.getColor()).append(Component.literal(": Reloads the config").withColor(ChatFormatting.WHITE.getColor())));
+        ctx.sendSystemMessage(Component.literal(" |- setscore ").withColor(ChatFormatting.AQUA.getColor()).append(Component.literal("<targets> <score>").withColor(ChatFormatting.GOLD.getColor())).append(Component.literal(": Sets a player's score.  Also rerolls their effects.").withColor(ChatFormatting.WHITE.getColor())));
+        ctx.sendSystemMessage(Component.literal(" |- getscore ").withColor(ChatFormatting.AQUA.getColor()).append(Component.literal("[targets]").withColor(ChatFormatting.GOLD.getColor())).append(Component.literal(": Gets a player's score").withColor(ChatFormatting.WHITE.getColor())));
+        ctx.sendSystemMessage(Component.literal(" \\- give ").withColor(ChatFormatting.AQUA.getColor()).append(Component.literal("<targets> <item> [count]").withColor(ChatFormatting.GOLD.getColor())).append(Component.literal(": Gives a player an infuse item.").withColor(ChatFormatting.WHITE.getColor())));
 
         return 1;
     }
@@ -93,7 +93,7 @@ public class InfuseCommand {
         Infuse.getInstance().config().load();
         Infuse.getInstance().reloadRecipes();
 
-        ctx.sendSystemMessage(Component.literal("Reloaded the config.").withColor(TextColor.GREEN));
+        ctx.sendSystemMessage(Component.literal("Reloaded the config.").withColor(ChatFormatting.GREEN.getColor()));
 
         return 1;
     }
@@ -105,7 +105,7 @@ public class InfuseCommand {
             if (target != null) {
                 targets = List.of(target);
             } else {
-                ctx.sendSystemMessage(Component.literal("You must specify a target.").withColor(TextColor.RED));
+                ctx.sendSystemMessage(Component.literal("You must specify a target.").withColor(ChatFormatting.RED.getColor()));
                 return 1;
             }
         }
@@ -121,7 +121,7 @@ public class InfuseCommand {
             infuse.dataManager().resetEffects(player);
         }
 
-        ctx.sendSystemMessage(Component.literal("Set %s to %d".formatted(targets.size() == 1 ? "%s's score".formatted(targets.iterator().next().getPlainTextName()) : "%d player's scores".formatted(targets.size()), score)).withColor(TextColor.GREEN));
+        ctx.sendSystemMessage(Component.literal("Set %s to %d".formatted(targets.size() == 1 ? "%s's score".formatted(targets.iterator().next().getPlainTextName()) : "%d player's scores".formatted(targets.size()), score)).withColor(ChatFormatting.GREEN.getColor()));
 
         return 1;
     }

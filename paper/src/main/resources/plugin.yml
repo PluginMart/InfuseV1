@@ -1,7 +1,7 @@
 name: InfuseV1
 version: '$version'
 main: org.turbojax.infusev1.paper.Main
-api-version: '26.2'
+api-version: '26.1.1'
 authors: [TurboJax]
 commands:
   infuse:

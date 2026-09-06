@@ -2,10 +2,10 @@ package org.turbojax.infusev1;
 
 import java.nio.file.Path;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextColor;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
@@ -54,7 +54,7 @@ public abstract class Infuse {
     }
 
     public static Component getEffectName(Holder.Reference<MobEffect> effect) {
-        return Component.literal(effect.key().identifier().toShortString().toUpperCase()).withColor(TextColor.YELLOW);
+        return Component.literal(effect.key().identifier().toShortString().toUpperCase()).withColor(ChatFormatting.YELLOW.getColor());
     }
 
     /** Gets the path to save the config file to. */
