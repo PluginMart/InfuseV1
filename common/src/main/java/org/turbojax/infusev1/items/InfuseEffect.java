@@ -3,10 +3,12 @@ package org.turbojax.infusev1.items;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextColor;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.effect.MobEffect;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -14,6 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.ItemLore;
 import net.minecraft.world.item.component.TooltipDisplay;
 import org.jspecify.annotations.NullMarked;
@@ -21,12 +24,15 @@ import org.jspecify.annotations.Nullable;
 import org.turbojax.infusev1.DataManager;
 import org.turbojax.infusev1.Infuse;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @NullMarked
 public class InfuseEffect extends CustomItem {
     public static final InfuseEffect EMPTY = new InfuseEffect(MobEffects.ABSORPTION, "");
+    public static final String EFFECT_KEY = "infusev1:stored_effect";
 
     private final Holder<MobEffect> effect;
     private final String owner;
@@ -44,7 +50,11 @@ public class InfuseEffect extends CustomItem {
     @Override
     public Component itemName() {
         String effectName = effect.unwrapKey().orElseThrow().identifier().toShortString();
-        effectName = effectName.substring(0, 1).toUpperCase() + effectName.substring(1);
+
+        effectName = Arrays.stream(effectName.split("_"))
+                .map(s -> s.substring(0, 1).toUpperCase() + s.substring(1))
+                .collect(Collectors.joining(" "));
+
         return Component.literal(effectName);
     }
 
@@ -59,6 +69,16 @@ public class InfuseEffect extends CustomItem {
     }
 
     @Override
+    public CustomData customData() {
+        CustomData old = super.customData();
+
+        CompoundTag tag = old.copyTag();
+        tag.putString(EFFECT_KEY, effect.unwrapKey().get().identifier().toString());
+
+        return CustomData.of(tag);
+    }
+
+    @Override
     public ItemStackTemplate createTemplate() {
         DataComponentPatch.Builder patch = DataComponentPatch.builder();
 
@@ -66,19 +86,26 @@ public class InfuseEffect extends CustomItem {
         patch.set(DataComponents.CUSTOM_NAME, itemName());
         patch.set(DataComponents.LORE, itemLore());
         patch.set(DataComponents.TOOLTIP_DISPLAY, TooltipDisplay.DEFAULT.withHidden(DataComponents.POTION_CONTENTS, true));
-        patch.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.empty(), Optional.of(effect.value().getColor()), List.of(new MobEffectInstance(effect)), Optional.empty()));
+        patch.set(DataComponents.POTION_CONTENTS, new PotionContents(Optional.empty(), Optional.of(effect.value().getColor()), List.of(), Optional.empty()));
         patch.set(DataComponents.ENCHANTMENT_GLINT_OVERRIDE, true);
 
         return new ItemStackTemplate(itemType(), patch.build());
     }
 
     public Holder.@Nullable Reference<MobEffect> getEffect(ItemStack item) {
-        if (isItem(item)) return null;
+        if (!isItem(item)) return null;
 
-        PotionContents contents = item.get(DataComponents.POTION_CONTENTS);
-        if (contents == null) return null;
+        CustomData data = item.get(DataComponents.CUSTOM_DATA);
+        if (data == null) return null;
 
-        return (Holder.Reference<MobEffect>) contents.customEffects().getFirst().getEffect();
+        CompoundTag tag = data.copyTag();
+        Optional<String> effectKey = tag.getString(EFFECT_KEY);
+        if (effectKey.isEmpty()) return null;
+
+        Identifier effectId = Identifier.parse(effectKey.get());
+        var effect = BuiltInRegistries.MOB_EFFECT.get(effectId);
+
+        return effect.orElse(null);
     }
 
     @Override
@@ -89,7 +116,7 @@ public class InfuseEffect extends CustomItem {
         // Removing a random negative effect from the player if they have any.
         if (pScore < 0) {
             dataManager.setScore(player, pScore + 1);
-            dataManager.removeRandomEffect(player);
+            dataManager.removeRandomEffect(player, true);
 
             item.shrink(1);
 
