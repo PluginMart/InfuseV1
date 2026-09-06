@@ -1,6 +1,5 @@
 package org.turbojax.infusev1.paper.commands;
 
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.adventure.PaperAdventure;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -21,7 +20,7 @@ public class DrainCommand {
             .build();
     }
 
-    public static int drain(CommandSourceStack src) throws CommandSyntaxException {
+    public static int drain(CommandSourceStack src) {
         Infuse infuse = Infuse.getInstance();
         if (!(src.getSender() instanceof Player player)) {
             src.getSender().sendMessage(Component.text("You must be a player to use this command!", NamedTextColor.RED));
