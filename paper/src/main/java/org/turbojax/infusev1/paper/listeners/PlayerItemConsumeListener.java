@@ -18,6 +18,6 @@ public class PlayerItemConsumeListener implements Listener {
 
         ItemStack newItem = ci.onConsume(((CraftPlayer) event.getPlayer()).getHandle(), item);
 
-        event.setItem(CraftItemStack.asBukkitCopy(newItem));
+        event.setReplacement(CraftItemStack.asBukkitCopy(newItem));
     }
 }
