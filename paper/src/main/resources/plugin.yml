@@ -7,16 +7,26 @@ commands:
   infuse:
     description: Base command for Infuse
     usage: /infuse help
+  drain:
+    description: Drains a random positive effect from the player
+    usage: /drain
 permissions:
   infusev1.help:
     description: "Lets players use `/infuse help`"
+    default: op
+  infusev1.drain:
+    description: "Lets players use `/infuse drain`"
   infusev1.reload:
     description: "Lets players use `/infuse reload`"
+    default: op
   infusev1.getscore:
     description: "Lets players use `/infuse getscore`"
   infusev1.getscore.other:
     description: "Lets players use `/infuse getscore <player>`"
+    default: op
   infusev1.setscore:
     description: "Lets players use `/infuse setscore`"
+    default: op
   infusev1.give:
     description: "Lets players use `/infuse give`"
+    default: op

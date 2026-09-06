@@ -31,23 +31,24 @@ public class InfuseCommand {
 
         return Commands.literal(alias)
             .then(Commands.literal("help")
-                .requires(src -> cmd.hasPermission(src, "infusev1.help"))
+                .requires(src -> hasPermission(src, "infusev1.help"))
                 .executes(ctx -> cmd.help(ctx.getSource()))
             )
+            .then(DrainCommand.build("drain"))
             .then(Commands.literal("reload")
-                .requires(src -> cmd.hasPermission(src, "infusev1.reload", Permissions.COMMANDS_ADMIN))
+                .requires(src -> hasPermission(src, "infusev1.reload", Permissions.COMMANDS_ADMIN))
                 .executes(ctx -> cmd.reload(ctx.getSource()))
             )
             .then(Commands.literal("getscore")
-                .requires(src -> cmd.hasPermission(src, "infusev1.getscore"))
+                .requires(src -> hasPermission(src, "infusev1.getscore"))
                 .executes(c -> cmd.getScore(c.getSource(), null))
                 .then(Commands.argument("player", EntityArgument.players())
-                    .requires(src -> cmd.hasPermission(src, "infusev1.getscore.other", Permissions.COMMANDS_ADMIN))
+                    .requires(src -> hasPermission(src, "infusev1.getscore.other", Permissions.COMMANDS_ADMIN))
                     .executes(c -> cmd.getScore(c.getSource(), EntityArgument.getPlayers(c, "player")))
                 )
             )
             .then(Commands.literal("setscore")
-                .requires(src -> cmd.hasPermission(src, "infusev1.setscore", Permissions.COMMANDS_ADMIN))
+                .requires(src -> hasPermission(src, "infusev1.setscore", Permissions.COMMANDS_ADMIN))
                 .then(Commands.argument("player", EntityArgument.players())
                     .then(Commands.argument("score", IntegerArgumentType.integer(config.minScore(), config.maxScore()))
                         .executes(c -> cmd.setScore(c.getSource(), EntityArgument.getPlayers(c, "player"), c.getArgument("score", Integer.class)))
@@ -55,7 +56,7 @@ public class InfuseCommand {
                 )
             )
             .then(Commands.literal("give")
-                .requires(src -> cmd.hasPermission(src, "infusev1.give", Permissions.COMMANDS_ADMIN))
+                .requires(src -> hasPermission(src, "infusev1.give", Permissions.COMMANDS_ADMIN))
                 .then(Commands.argument("player", EntityArgument.players())
                     .then(Commands.argument("item", StringArgumentType.word())
                         .suggests((_, builder) -> {
@@ -79,6 +80,7 @@ public class InfuseCommand {
     public int help(CommandSourceStack ctx) {
         ctx.sendSystemMessage(Component.literal("/infuse").withColor(TextColor.AQUA));
         ctx.sendSystemMessage(Component.literal(" |- help").withColor(TextColor.AQUA).append(Component.literal(": Shows the help message").withColor(TextColor.WHITE)));
+        ctx.sendSystemMessage(Component.literal(" |- drain").withColor(TextColor.AQUA).append(Component.literal(": Drains a positive effect").withColor(TextColor.WHITE)));
         ctx.sendSystemMessage(Component.literal(" |- reload").withColor(TextColor.AQUA).append(Component.literal(": Reloads the config").withColor(TextColor.WHITE)));
         ctx.sendSystemMessage(Component.literal(" |- setscore ").withColor(TextColor.AQUA).append(Component.literal("<player> <score>").withColor(TextColor.GOLD)).append(Component.literal(": Sets a player's score.  Also rerolls their effects.").withColor(TextColor.WHITE)));
         ctx.sendSystemMessage(Component.literal(" |- getscore ").withColor(TextColor.AQUA).append(Component.literal("<player>").withColor(TextColor.GOLD)).append(Component.literal(": Gets a player's score").withColor(TextColor.WHITE)));
@@ -141,11 +143,11 @@ public class InfuseCommand {
         return 1;
     }
 
-    public boolean hasPermission(CommandSourceStack source, String permission) {
+    public static boolean hasPermission(CommandSourceStack source, String permission) {
         return hasPermission(source, permission, null);
     }
 
-    public boolean hasPermission(CommandSourceStack source, String permission, @Nullable Permission fallbackPermission) {
+    public static boolean hasPermission(CommandSourceStack source, String permission, @Nullable Permission fallbackPermission) {
         // TODO: Check luckperms
 
         if (fallbackPermission == null) return true;

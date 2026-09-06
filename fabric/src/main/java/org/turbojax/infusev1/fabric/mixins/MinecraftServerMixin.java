@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.turbojax.infusev1.Infuse;
+import org.turbojax.infusev1.fabric.commands.DrainCommand;
 import org.turbojax.infusev1.fabric.commands.InfuseCommand;
 import org.turbojax.infusev1.fabric.InfuseLoader;
 
@@ -24,6 +25,7 @@ public abstract class MinecraftServerMixin {
 
         // Registering the command
         this.getCommands().getDispatcher().getRoot().addChild(InfuseCommand.build("infuse"));
+        this.getCommands().getDispatcher().getRoot().addChild(DrainCommand.build("drain"));
     }
 
     @Inject(method="stopServer", at=@At("HEAD"))

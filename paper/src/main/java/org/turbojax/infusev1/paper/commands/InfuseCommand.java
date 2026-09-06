@@ -33,6 +33,7 @@ public class InfuseCommand {
                 .requires(src -> src.getSender().hasPermission("infusev1.help"))
                 .executes(ctx -> cmd.help(ctx.getSource()))
             )
+            .then(DrainCommand.build("drain"))
             .then(Commands.literal("reload")
                 .requires(src -> src.getSender().hasPermission("infusev1.reload"))
                 .executes(ctx -> cmd.reload(ctx.getSource()))
@@ -98,7 +99,7 @@ public class InfuseCommand {
     public int getScore(CommandSourceStack ctx, @Nullable PlayerSelectorArgumentResolver resolver) {
         List<Player> targets;
         if (resolver == null) {
-            if (ctx instanceof Player p) {
+            if (ctx.getSender() instanceof Player p) {
                 targets = List.of(p);
             } else {
                 ctx.getSender().sendMessage(Component.text("You must specify a target.", NamedTextColor.RED));
