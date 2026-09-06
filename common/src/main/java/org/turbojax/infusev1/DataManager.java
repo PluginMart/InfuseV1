@@ -94,6 +94,12 @@ public class DataManager extends MutableConfig {
         save();
     }
 
+    public boolean hasEffect(Player player, Holder.Reference<MobEffect> effect) {
+        assert root != null;
+
+        return getEffects(player).stream().anyMatch(e -> e.key().identifier().equals(effect.key().identifier()));
+    }
+
     /**
      * Adds an effect to the player.
      * Does not actually check if the provided effect is positive or negative.
