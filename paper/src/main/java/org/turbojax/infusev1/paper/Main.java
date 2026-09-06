@@ -14,8 +14,9 @@ public class Main extends JavaPlugin {
         new InfusePaper();
 
         // Registering the command
-        LifecycleEvents.COMMANDS.newHandler(e -> {
+        getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, e -> {
              e.registrar().register(PaperInfuseCommand.build("infuse"));
+             Infuse.LOGGER.info("Infuse command registered");
         });
 
         // Registering listeners
