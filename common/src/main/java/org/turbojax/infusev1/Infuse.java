@@ -94,7 +94,7 @@ public abstract class Infuse {
 
             if (deadScore > 0) {
                 // Removing a random positive effect
-                dataManager.removeRandomEffect(dead, true);
+                dataManager.removeRandomEffect(dead, false);
             } else {
                 // Giving a random negative effect
                 dataManager.addRandomEffect(dead, false);
@@ -112,7 +112,7 @@ public abstract class Infuse {
 
         if (killerScore < 0) {
             // Removing a random negative effect
-            dataManager.removeRandomEffect(killer, false);
+            dataManager.removeRandomEffect(killer, true);
         } else {
             // Giving a random positive effect
             dataManager.addRandomEffect(killer, true);

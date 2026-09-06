@@ -104,7 +104,7 @@ public class DataManager extends MutableConfig {
     /**
      * Adds an effect to the player.
      * Does not actually check if the provided effect is positive or negative.
-     * 
+     *
      * @param player the player to give an effect to.
      * @param type The PotionEffectType to add.
      */
@@ -156,12 +156,12 @@ public class DataManager extends MutableConfig {
         addEffect(player, effect);
     }
 
-    public void removeRandomEffect(Player player, boolean positive) {
+    public void removeRandomEffect(Player player, boolean green) {
         assert root != null;
 
         List<Holder.Reference<MobEffect>> effects = new ArrayList<>(getEffects(player));
         Holder.Reference<MobEffect> removed = effects.remove((int)(Math.random() * effects.size()));
-        player.sendSystemMessage(Component.literal("You lost ").withColor(positive ? TextColor.GREEN : TextColor.RED).append(Infuse.getEffectName(removed)));
+        player.sendSystemMessage(Component.literal("You lost ").withColor(green ? TextColor.GREEN : TextColor.RED).append(Infuse.getEffectName(removed)));
 
         removeEffect(player, removed);
     }
