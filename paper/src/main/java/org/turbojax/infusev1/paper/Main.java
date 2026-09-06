@@ -20,6 +20,9 @@ public class Main extends JavaPlugin {
             e.registrar().register(DrainCommand.build("drain"));
         });
 
+        // Registering recipes
+        Infuse.getInstance().reloadRecipes();
+
         // Registering listeners
         Bukkit.getPluginManager().registerEvents(new PlayerDeathListener(), this);
         Bukkit.getPluginManager().registerEvents(new PlayerItemConsumeListener(), this);

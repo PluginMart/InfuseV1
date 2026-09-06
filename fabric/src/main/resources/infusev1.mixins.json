@@ -3,6 +3,7 @@
   "package": "org.turbojax.infusev1.fabric.mixins",
   "server": [
     "ConsumableMixin",
+    "DedicatedServerMixin",
     "MinecraftServerMixin",
     "PlayerListMixin",
     "RecipeManagerMixin",
