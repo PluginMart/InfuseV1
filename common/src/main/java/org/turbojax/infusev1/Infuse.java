@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import com.mojang.authlib.GameProfile;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.permissions.Permission;
 import net.minecraft.server.permissions.Permissions;
@@ -19,6 +20,10 @@ import org.slf4j.LoggerFactory;
 public abstract class Infuse {
     public static final Logger LOGGER = LoggerFactory.getLogger("InfuseV1");
     private static Infuse instance;
+
+    public static Identifier id(String path) {
+        return Identifier.fromNamespaceAndPath("infusev1", path);
+    }
 
     protected final MainConfig config;
     protected final DataManager dataManager;
@@ -55,6 +60,8 @@ public abstract class Infuse {
     public DataManager dataManager() {
         return dataManager;
     }
+
+    public abstract void reloadRecipes();
 
     /**
      * Updates the dead player's score and gives them a random negative effect.<br>
