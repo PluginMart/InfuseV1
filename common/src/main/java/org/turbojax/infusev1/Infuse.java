@@ -85,6 +85,7 @@ public abstract class Infuse {
      */
     public void onDeath(ServerPlayer dead) {
         if (dead.getKillCredit() == null && !config.loseEffectOnNaturalDeath()) return;
+        if (dead.getKillCredit().equals(dead)) return;
 
         int deadScore = dataManager.getScore(dead);
 
